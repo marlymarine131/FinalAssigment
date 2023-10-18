@@ -24,6 +24,7 @@ create table Shop(
 	shopAddress nvarchar(max),
 	banner varbinary(max) null,
 )
+
 go
 create table Food(
 	foodID int not null primary key,
@@ -31,4 +32,31 @@ create table Food(
 	foodName nvarchar(50),
 	price decimal(18,2),
 )
+
 go
+create table customer (
+	cusID int not null primary key,
+	address nvarchar(200),
+	Username varchar(20),
+	phone varchar(10) check (phone like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
+	password varchar(20) not null,
+	name nvarchar(50),
+	email varchar(30) check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
+	);
+
+go
+create table Order (
+	OrderID int not null primary key,
+	shopID int not null,
+	ShipperID int,
+	cusID int not null,
+	foodID int not null,
+	address nvarchar(200),
+	quantity int,
+	total_price decimal(18,2),
+	status nvarchar(50),
+	foreign key (shopID) references Shop(shopID),
+	foreign key (ShipperID) references Shipper(ShipperID),
+	foreign key (cusID) references Customer(cusID),
+	foreign key (foodID) references Food(foodID)
+	);

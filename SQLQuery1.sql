@@ -32,3 +32,11 @@ create table Food(
 	price decimal(18,2),
 )
 go
+create table voucher(
+	dateAplied Date,
+	queriDate Date,
+	price float,
+	voucherID int identity(1,1) primary key,
+	foodID int not null foreign key references Food(foodID)
+	
+)

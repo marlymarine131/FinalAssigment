@@ -32,8 +32,11 @@
         </form>
         <p class="signup-already">
             <span>Don't have an account?</span>
-            <a href="#" class="signup-login-link">signup</a>
+            <a href="addNewAccout.jsp" class="signup-login-link">signup</a>
         </p>
     </div>
 
 </section>
+
+<%@ include file="/includes/Footer.jsp" %>
+

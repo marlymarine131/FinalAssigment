@@ -12,8 +12,30 @@
         <meta charset="utf-8">
         <title>Trường ĐẠI HỌC FPT </title>
         <link rel="shortcut icon" href="images/favicon.ico">
-        <link rel="stylesheet" href="styles/stylesCss">
+        <link rel="stylesheet" href="styles/stylesCSS.css">
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+        <script>
+        function handleRoleChange() {
+            var roleSelect = document.getElementById("role");
+            var ownerFields = document.getElementById("ownerFields");
+            var customerFields = document.getElementById("customerFields");
+            var shipperFields = document.getElementById("shipperFields");
+
+            // Ẩn tất cả các trường điều chỉnh
+            ownerFields.style.display = "none";
+            customerFields.style.display = "none";
+            shipperFields.style.display = "none";
+
+            // Hiển thị trường tương ứng với lựa chọn "Role"
+            if (roleSelect.value === "Owner") {
+                ownerFields.style.display = "block";
+            } else if (roleSelect.value === "Customer") {
+                customerFields.style.display = "block";
+            } else if (roleSelect.value === "Shipper") {
+                shipperFields.style.display = "block";
+            }
+        }
+    </script>
     </head>
     <% request.setCharacterEncoding("UTF-8");%>
     <body>

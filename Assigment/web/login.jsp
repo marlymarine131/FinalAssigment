@@ -10,25 +10,26 @@
 <!DOCTYPE html>
 <section>
     <div class="signup">
-        <h1 class="signup-heading">Sign up</h1>
+        <h1 class="signup-heading">Sign in</h1>
         <button class="signup-social">
             <i class="fa fa-google signup-social-icon"></i>
             <span class="signup-social-text">Sign up with google</span>
         </button>
         <div class="signup-or"><span>Or</span></div>
-        <form action="login" method="post" method="post" class="signup-form" autocomplete="off">
+        <form action="login" method="post" class="signup-form" autocomplete="off">
             <label for="email" class="signup-label">Email</label>
-            <input type="text" id="email" class="signup-input" placeholder="Eg: johndoe@email.com">
+            <input type="text" name="email" id="email" class="signup-input" placeholder="Eg: johndoe@email.com">
 
             <label for="password" class="signup-label">Password</label>
-            <input type="password" id="password" class="signup-input" placeholder="Enter your password">
+            <input type="password" name="password" id="password" class="signup-input" placeholder="Enter your password">
 
             <label for="role" class="signup-label">Select a role</label>
-            <select id="role" class="signup-input">
+            <select id="role" name="role" class="signup-input">
                 <option value="Owner">Owner</option>
                 <option value="Customer">Customer</option>
                 <option value="Shipper">Shipper</option>
             </select>
+            <button type="submit">Sign in</button>
         </form>
         <p class="signup-already">
             <span>Don't have an account?</span>

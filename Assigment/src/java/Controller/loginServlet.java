@@ -6,10 +6,14 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.DatabaseConnector;
 
 /**
  *
@@ -55,7 +59,7 @@ public class loginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 
     /**
@@ -69,7 +73,33 @@ public class loginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String role = request.getParameter("role");
+        if(email == null || email.isEmpty() || password == null || password.isEmpty() || role == null || role.isEmpty()){
+            response.sendRedirect("login.jsp?error=Please fill in all fields");
+            return;
+        }
+        try (Connection connection = DatabaseConnector.getConnection()){
+            
+            String insertQuery = "SELECT email, password FROM customer WHERE email=? AND password=?";
+            try(PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)){
+                preparedStatement.setString(1, email);
+                preparedStatement.setString(2, password);
+                
+                try (ResultSet resultSet = preparedStatement.executeQuery()){
+                    if(resultSet.next()){
+                        response.sendRedirect("success.jsp");
+                    }else {
+                        response.sendRedirect("login.jsp?error=Invalid email or password");
+                    }
+                }
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("login.jsp?error=Database error" + e);
+        }
     }
 
     /**

@@ -121,10 +121,17 @@ public class addNew extends HttpServlet {
                     response.sendRedirect("addNewAccout.jsp?error=Failed to add new account");
                 }
             }
+            connection.setAutoCommit(false);
+
         } catch (SQLException e) {
-            e.printStackTrace();
-            response.sendRedirect("addNewAccout.jsp?error=Database error" + e);
-            return;
+            
+            e.printStackTrace(); // In thông tin lỗi vào console
+            // Xử lý ngoại lệ SQL
+            if (e.getSQLState().equals("23505") || e.getMessage().contains("unique constraint")) {
+                response.sendRedirect("addNewAccout.jsp?error=Email already registered");
+            } else {
+                response.sendRedirect("addNewAccout.jsp?error=Database error" + e);
+            }
         }
 
     }

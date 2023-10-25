@@ -30,6 +30,18 @@
             </select>
             <button type="submit" class="signup-btn">Sign Up</button>
         </form>
+        <%
+            String errorMessage = (String) request.getAttribute("error");
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+        %>
+        <c:if test="${not empty errorMessage}">
+            <div class="error-message">
+                <%=errorMessage%>
+            </div>
+        </c:if>
+        <%
+            }
+        %>
         <p class="signup-already">
             <span>Already have an account?</span>
             <a href="login.jsp" class="signup-login-link">Login</a>

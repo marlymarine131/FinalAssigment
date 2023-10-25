@@ -41,7 +41,7 @@ create table customer (
 	phone varchar(10) check (phone like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
 	password varchar(20) not null,
 	name nvarchar(50),
-	email varchar(30) check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
+	email varchar(30) unique check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
 	);
 
 go

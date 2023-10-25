@@ -45,6 +45,15 @@ create table customer (
 	);
 
 go
+create table Shipper (
+	ShipperID int not null primary key,
+	address nvarchar(200),
+	Username varchar(20),
+	phone varchar(10) check (phone like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
+	password varchar(20) not null,
+	name nvarchar(50),
+	email varchar(30) check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
+	);
 create table Order1 (
 	OrderID int not null primary key,
 	shopID int not null,
@@ -61,12 +70,4 @@ create table Order1 (
 	foreign key (foodID) references Food(foodID)
 	);
 
-	create table Shipper (
-	ShipperID int not null primary key,
-	address nvarchar(200),
-	Username varchar(20),
-	phone varchar(10) check (phone like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
-	password varchar(20) not null,
-	name nvarchar(50),
-	email varchar(30) check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
-	);
+	

@@ -4,15 +4,19 @@
 <section>
     <div class="signup">
         <h1 class="signup-heading">Sign up</h1>
+<<<<<<< HEAD
         <form action="addNew" method="post" class="signup-form" enctype="multipart/form-data">
+=======
+        <form action="addNew" method="post" class="signup-form" autocomplete="off">
+>>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
             <label for="email" class="signup-label">Email</label>
-            <input type="text" name="email" id="email" class="signup-input" placeholder="Eg: johndoe@email.com" required>
+            <input type="text" name="email" id="email" class="signup-input" placeholder="Eg: johndoe@email.com" >
 
             <label for="password" class="signup-label">Password</label>
-            <input type="password" name="password" id="password" class="signup-input" placeholder="Enter your password" required>
+            <input type="password" name="password" id="password" class="signup-input" placeholder="Enter your password" >
 
             <label for="password" class="signup-label">Password</label>
-            <input type="password" name="conPassword" id="password" class="signup-input" placeholder="conferm password" required>
+            <input type="password" name="conPassword" id="password" class="signup-input" placeholder="confirm password" >
 
             <label for="role" class="signup-label">Select a role</label>
             <select name="role" id="role" class="signup-input" onchange="handleRoleChange()">
@@ -20,6 +24,7 @@
                 <option value="Customer">Customer</option>
                 <option value="Shipper">Shipper</option>
             </select>
+<<<<<<< HEAD
             <div id="ownerFields" style="display: none;">
                 <label for="ownerName" class="signup-label">Owner Name</label>
                 <input type="text" name="ownerName" id="ownerName" class="signup-input" placeholder="Enter owner name">
@@ -61,8 +66,22 @@
                 <input type="text" name="shipperField1" id="shipperField1" class="signup-input" placeholder="Enter shipper field 1">
             </div>
 
+=======
+>>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
             <button type="submit" class="signup-btn">Sign Up</button>
         </form>
+        <%
+            String errorMessage = (String) request.getAttribute("error");
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+        %>
+        <c:if test="${not empty errorMessage}">
+            <div class="error-message">
+                <%=errorMessage%>
+            </div>
+        </c:if>
+        <%
+            }
+        %>
         <p class="signup-already">
             <span>Already have an account?</span>
             <a href="login.jsp" class="signup-login-link">Login</a>

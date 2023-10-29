@@ -10,6 +10,13 @@
 <section>
     <div class="signup">
         <h1 class="signup-heading">Sign in</h1>
+<<<<<<< HEAD
+=======
+        <button class="signup-social">
+            <i class="fa fa-google signup-social-icon"></i>
+            <span class="signup-social-text">Sign up with google</span>
+        </button>
+>>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
         <div class="signup-or"><span>Or</span></div>
         <form action="login" method="post" class="signup-form" autocomplete="off">
             <label for="email" class="signup-label">Email</label>

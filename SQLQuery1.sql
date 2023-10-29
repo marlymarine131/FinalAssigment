@@ -24,6 +24,7 @@ create table Shop(
 	shopAddress nvarchar(max),
 	banner varchar(max) null,
 )
+
 go
 create table Food(
 	foodID int identity(1,1) not null primary key,
@@ -31,7 +32,9 @@ create table Food(
 	foodName nvarchar(50),
 	price decimal(18,2),
 )
+
 go
+<<<<<<< HEAD
 create table voucher(
 	dateAplied Date,
 	queriDate Date,
@@ -39,3 +42,42 @@ create table voucher(
 	voucherID int identity(1,1) primary key,
 	foodID int not null foreign key references Food(foodID)	
 )
+=======
+create table customer (
+	cusID INT IDENTITY(1,1) PRIMARY KEY,
+	address nvarchar(200),
+	Username varchar(20),
+	phone varchar(10) check (phone like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
+	password varchar(20) not null,
+	name nvarchar(50),
+	email varchar(30) unique check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
+	);
+
+go
+create table Shipper (
+	ShipperID int not null primary key,
+	address nvarchar(200),
+	Username varchar(20),
+	phone varchar(10) check (phone like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
+	password varchar(20) not null,
+	name nvarchar(50),
+	email varchar(30) check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
+	);
+create table Order1 (
+	OrderID int not null primary key,
+	shopID int not null,
+	ShipperID int,
+	cusID int not null,
+	foodID int not null,
+	address nvarchar(200),
+	quantity int,
+	total_price decimal(18,2),
+	status nvarchar(50),
+	foreign key (shopID) references Shop(shopID),
+	foreign key (ShipperID) references Shipper(ShipperID),
+	foreign key (cusID) references Customer(cusID),
+	foreign key (foodID) references Food(foodID)
+	);
+
+	
+>>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e

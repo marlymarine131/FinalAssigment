@@ -4,28 +4,33 @@
  */
 package model;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+
 /**
  *
  * @author oteee
  */
 public class Food {
+
     private int foodID;
     private int shopID;
-    private String foodDescription;
     private String foodName;
-    private int price;
+    private BigDecimal price;
+    private byte[] imagine;
 
-    public Food(int foodID, int shopID, String foodDescription, String foodName, int price) {
-        this.foodID = foodID;
-        this.shopID = shopID;
-        this.foodDescription = foodDescription;
-        this.foodName = foodName;
-        this.price = price;
-    }
-
+    // Constructors
     public Food() {
     }
 
+    public Food(int shopID, String foodName, BigDecimal price, byte[] imagine) {
+        this.shopID = shopID;
+        this.foodName = foodName;
+        this.price = price;
+        this.imagine = imagine;
+    }
+
+    // Getters and setters
     public int getFoodID() {
         return foodID;
     }
@@ -42,14 +47,6 @@ public class Food {
         this.shopID = shopID;
     }
 
-    public String getFoodDescription() {
-        return foodDescription;
-    }
-
-    public void setFoodDescription(String foodDescription) {
-        this.foodDescription = foodDescription;
-    }
-
     public String getFoodName() {
         return foodName;
     }
@@ -58,12 +55,27 @@ public class Food {
         this.foodName = foodName;
     }
 
-    public int getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
-    
+
+    public byte[] getImagine() {
+        return imagine;
+    }
+
+    public void setImagine(byte[] imagine) {
+        this.imagine = imagine;
+    }
+
+    // toString method (optional)
+    @Override
+    public String toString() {
+        return "Food [foodID=" + foodID + ", shopID=" + shopID + ", foodName=" + foodName
+                + ", price=" + price + ", imagine=" + Arrays.toString(imagine) + "]";
+    }
 }
+

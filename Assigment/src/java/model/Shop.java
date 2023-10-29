@@ -9,19 +9,28 @@ package model;
  * @author oteee
  */
 public class Shop {
+    private int shopID;
+    private int ownerID;
     private String shopName;
     private String shopAddress;
-    private int ownerID;
-    private int shopID;
+    private byte[] banner;
 
-    public Shop(String shopName, String shopAddress, int ownerID, int shopID) {
-        this.shopName = shopName;
-        this.shopAddress = shopAddress;
-        this.ownerID = ownerID;
+    // Constructors, Getters, and Setters
+
+    public int getShopID() {
+        return shopID;
+    }
+
+    public void setShopID(int shopID) {
         this.shopID = shopID;
     }
 
-    public Shop() {
+    public int getOwnerID() {
+        return ownerID;
+    }
+
+    public void setOwnerID(int ownerID) {
+        this.ownerID = ownerID;
     }
 
     public String getShopName() {
@@ -40,20 +49,11 @@ public class Shop {
         this.shopAddress = shopAddress;
     }
 
-    public int getOwnerID() {
-        return ownerID;
+    public byte[] getBanner() {
+        return banner;
     }
 
-    public void setOwnerID(int ownerID) {
-        this.ownerID = ownerID;
-    }
-
-    public int getShopID() {
-        return shopID;
-    }
-
-    public void setShopID(int shopID) {
-        this.shopID = shopID;
-    }
-    
+    public void setBanner(byte[] banner) {
+        this.banner = banner;
+    }  
 }

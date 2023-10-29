@@ -12,30 +12,39 @@ public class Owner {
     private int ownerID;
     private String taxNumber;
     private String ownerName;
+    private String areaServe;
     private String phone;
     private String description;
     private String email;
     private String addressHead;
+    private byte[] banner;
+    private String password;
 
-    public Owner(int ownerId, String taxNumber, String ownerName, String phone, String description, String email, String addressHead) {
-        this.ownerID = ownerId;
+    public Owner() {
+    }
+    
+    
+    
+    
+    public Owner(int ownerID, String taxNumber, String ownerName, String areaServe, String phone, String description, String email, String addressHead, byte[] banner, String password) {
+        this.ownerID = ownerID;
         this.taxNumber = taxNumber;
         this.ownerName = ownerName;
+        this.areaServe = areaServe;
         this.phone = phone;
         this.description = description;
         this.email = email;
         this.addressHead = addressHead;
+        this.banner = banner;
+        this.password = password;
     }
 
-    public Owner() {
-    }
-
-    public int getOwnerId() {
+    public int getOwnerID() {
         return ownerID;
     }
 
-    public void setOwnerId(int ownerId) {
-        this.ownerID = ownerId;
+    public void setOwnerID(int ownerID) {
+        this.ownerID = ownerID;
     }
 
     public String getTaxNumber() {
@@ -52,6 +61,14 @@ public class Owner {
 
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
+    }
+
+    public String getAreaServe() {
+        return areaServe;
+    }
+
+    public void setAreaServe(String areaServe) {
+        this.areaServe = areaServe;
     }
 
     public String getPhone() {
@@ -85,6 +102,30 @@ public class Owner {
     public void setAddressHead(String addressHead) {
         this.addressHead = addressHead;
     }
+
+    public byte[] getBanner() {
+        return banner;
+    }
+
+    public void setBanner(byte[] banner) {
+        this.banner = banner;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "Owner{" + "ownerID=" + ownerID + ", taxNumber=" + taxNumber + ", ownerName=" + ownerName + ", areaServe=" + areaServe + ", phone=" + phone + ", description=" + description + ", email=" + email + ", addressHead=" + addressHead + ", banner=" + banner + ", password=" + password + '}';
+    }
+    
+
+    
     
     
 }

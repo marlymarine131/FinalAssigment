@@ -6,10 +6,17 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import static java.lang.System.out;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import model.*;
 
 /**
  *
@@ -34,7 +41,7 @@ public class loginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet loginServlet</title>");            
+            out.println("<title>Servlet loginServlet</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet loginServlet at " + request.getContextPath() + "</h1>");
@@ -55,7 +62,7 @@ public class loginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.sendRedirect("login.jsp");
     }
 
     /**
@@ -69,7 +76,44 @@ public class loginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String role = request.getParameter("role");
+        OwnerDatabase ownerDAO = new OwnerDatabase();
+        if ("Owner".equals(role)) {
+            Owner ow;
+            try {
+                ow = ownerDAO.loginOwner(email, password);
+                if (ow != null) {
+                    HttpSession session = request.getSession();
+                    session.setAttribute("owner", ow);
+                    request.getRequestDispatcher("index.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
+                    request.getRequestDispatcher("login.jsp").forward(request, response);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(loginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                request.setAttribute("MSG", ex);
+                request.getRequestDispatcher("fail.jsp").forward(request, response);
+            }
+
+//        } else if ("Customer".equals(role)) {
+//            if (CustomerDB.loginCustomer(email, password)) {
+//                out.println("Customer login successful!");
+//            } else {
+//                out.println("Customer login failed.");
+//            }
+//        } else if ("Shipper".equals(role)) {
+//            if (ShiperDB.loginShipper(email, password)) {
+//                out.println("Shipper login successful!");
+//            } else {
+//                out.println("Shipper login failed.");
+//            }
+//        } else {
+//            out.println("Invalid role.");
+//        }
+        }
     }
 
     /**

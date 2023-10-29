@@ -5,16 +5,33 @@
 package Controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+
+import model.OwnerDatabase;
 
 /**
  *
  * @author oteee
  */
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2 MB
+        maxFileSize = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize = 1024 * 1024 * 50 // 50 MB
+)
 public class addNew extends HttpServlet {
 
     /**
@@ -55,7 +72,7 @@ public class addNew extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.getRequestDispatcher("addNewAccout.jsp").forward(request, response);
     }
 
     /**
@@ -71,9 +88,45 @@ public class addNew extends HttpServlet {
             throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String conPassword = request.getParameter("conPassword");
         String role = request.getParameter("role");
+        OwnerDatabase ow = new OwnerDatabase();
+        if ("Owner".equals(role)) {
 
-  
+            // Load JDBC driver
+            // Set the parameters
+            String taxNumber = request.getParameter("taxNumber");
+            String ownerName = request.getParameter("ownerName");
+            String areaServe = request.getParameter("areaServe");
+            String phone = request.getParameter("phone");
+            String description = request.getParameter("description");
+
+            String addressHead = request.getParameter("addressHead");
+            Part bannerPart = request.getPart("banner");
+            InputStream bannerInputStream = bannerPart.getInputStream();
+
+            try {
+                if (ow.insertOwner(taxNumber, ownerName, areaServe, phone, description, email, addressHead, bannerInputStream, password)) {
+                    request.setAttribute("MSG", "chuc mung chu");
+                    request.getRequestDispatcher("fail.jsp").forward(request, response);
+                } else {
+
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(addNew.class.getName()).log(Level.SEVERE, null, ex);
+                request.setAttribute("MSG", "sai roi em trai" + ex);
+                request.getRequestDispatcher("fail.jsp").forward(request, response);
+            }
+
+        } else if ("Customer".equals(role)) {
+
+        } else if ("Shipper".equals(role)) {
+
+        } else {
+            // Xử lý cho các role khác hoặc thông báo lỗi nếu cần
+            response.getWriter().println("Invalid Role");
+        }
+
     }
 
     /**

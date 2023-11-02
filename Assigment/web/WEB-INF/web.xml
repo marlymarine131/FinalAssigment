@@ -25,12 +25,8 @@
         <servlet-class>Controller.listAllServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>addFood</servlet-name>
+            <servlet-name>addFood</servlet-name>
         <servlet-class>Controller.addFood</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>addShopServlet</servlet-name>
-        <servlet-class>Controller.addShopServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>logOut</servlet-name>
@@ -39,6 +35,26 @@
     <servlet>
         <servlet-name>editshop</servlet-name>
         <servlet-class>Controller.editshop</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>listAllFod</servlet-name>
+        <servlet-class>Controller.listAllFod</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>listAllShop</servlet-name>
+        <servlet-class>Controller.listAllShop</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>addShop</servlet-name>
+        <servlet-class>Controller.addShop</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>addNewShop</servlet-name>
+        <servlet-class>Controller.addShopServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>deleteShop</servlet-name>
+        <servlet-class>Controller.deleteShop</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>login</servlet-name>
@@ -69,10 +85,6 @@
         <url-pattern>/addFood</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>addShopServlet</servlet-name>
-        <url-pattern>/addShop</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>logOut</servlet-name>
         <url-pattern>/logOut</url-pattern>
     </servlet-mapping>
@@ -80,12 +92,32 @@
         <servlet-name>editshop</servlet-name>
         <url-pattern>/editshop</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>listAllFod</servlet-name>
+        <url-pattern>/listAllFod</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>listAllShop</servlet-name>
+        <url-pattern>/listAllShop</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>addShop</servlet-name>
+        <url-pattern>/addShop</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>addNewShop</servlet-name>
+        <url-pattern>/addNewShop</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>deleteShop</servlet-name>
+        <url-pattern>/deleteShop</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>ManageFood.jsp</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 </web-app>

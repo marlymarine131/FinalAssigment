@@ -9,14 +9,7 @@
 <!DOCTYPE html>
 <section>
     <div class="signup">
-        <h1 class="signup-heading">Sign in</h1>
-<<<<<<< HEAD
-=======
-        <button class="signup-social">
-            <i class="fa fa-google signup-social-icon"></i>
-            <span class="signup-social-text">Sign up with google</span>
-        </button>
->>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
+        <h1 class="signup-heading">login</h1>
         <div class="signup-or"><span>Or</span></div>
         <form action="login" method="post" class="signup-form" autocomplete="off">
             <label for="email" class="signup-label">Email</label>
@@ -31,7 +24,7 @@
                 <option value="Customer">Customer</option>
                 <option value="Shipper">Shipper</option>
             </select>
-            <button type="submit">Sign in</button>
+            <button type="submit">login</button>
         </form>
         <c:if test="${not empty errorMessage}">
             <p style="color: red;">${"email or password or role wrong"}</p>
@@ -41,6 +34,7 @@
             <a href="addNewAccout.jsp" class="signup-login-link">signup</a>
         </p>
     </div>
+    
 
 </section>
 

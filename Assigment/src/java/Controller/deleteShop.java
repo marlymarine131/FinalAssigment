@@ -6,17 +6,21 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
+import model.*;
 
 /**
  *
  * @author oteee
  */
-public class logOut extends HttpServlet {
+public class deleteShop extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,10 +39,10 @@ public class logOut extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet logOut</title>");            
+            out.println("<title>Servlet deleteShop</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet logOut at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet deleteShop at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -56,13 +60,23 @@ public class logOut extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate(); // Invalidate the session, logging out the user
-        }
+        int shopID = Integer.parseInt(request.getParameter("shopId")); // Lấy shopID từ request
 
-        // Redirect to the login page or any other page after logout
-        response.sendRedirect("index.jsp");
+        OwnerDatabase shopDAO = new OwnerDatabase();
+
+        try {
+            if (shopDAO.deleteShop(shopID)) {
+                response.getWriter().println("Hàng trong bảng Shop đã được xóa thành công!");
+            } else {
+                response.getWriter().println("Không thể xóa hàng trong bảng Shop.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.getWriter().println("Lỗi xóa hàng trong bảng Shop: " + e.getMessage());
+            Logger.getLogger(deleteShop.class.getName()).log(Level.SEVERE, null, e);
+
+        }
+        response.sendRedirect("listAllShop");
     }
 
     /**

@@ -6,17 +6,18 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import model.*;
 
 /**
  *
  * @author oteee
  */
-public class logOut extends HttpServlet {
+public class listAllShop extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,10 +36,10 @@ public class logOut extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet logOut</title>");            
+            out.println("<title>Servlet listAllShop</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet logOut at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet listAllShop at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -56,13 +57,13 @@ public class logOut extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate(); // Invalidate the session, logging out the user
-        }
+//        request.getRequestDispatcher("ManageShop.jsp").forward(request, response);
+        OwnerDatabase ownerDatabase = new OwnerDatabase();
+//        Owner ow = (Owner) request.getSession().getAttribute("owner");
 
-        // Redirect to the login page or any other page after logout
-        response.sendRedirect("index.jsp");
+        List<Shop> shopList = ownerDatabase.getAllShop();
+        request.setAttribute("shopList", shopList);
+        request.getRequestDispatcher("ManageShop.jsp").forward(request, response);
     }
 
     /**
@@ -76,7 +77,7 @@ public class logOut extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
     }
 
     /**

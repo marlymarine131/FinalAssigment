@@ -4,16 +4,19 @@
  */
 package Controller;
 
+
+
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import javax.servlet.http.Part;
 import model.Owner;
 import model.OwnerDatabase;
@@ -22,6 +25,12 @@ import model.OwnerDatabase;
  *
  * @author oteee
  */
+
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2 MB
+        maxFileSize = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize = 1024 * 1024 * 50 // 50 MB
+)
 public class addShopServlet extends HttpServlet {
 
     /**
@@ -41,7 +50,7 @@ public class addShopServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet addShopServlet</title>");
+            out.println("<title>Servlet addShopServlet</title>");            
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet addShopServlet at " + request.getContextPath() + "</h1>");
@@ -62,9 +71,7 @@ public class addShopServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect("ManageShop.jsp");
-//        request.getRequestDispatcher("ManageShop.jsp").forward(request, response);
-
+        request.getRequestDispatcher("ManageShop.jsp").forward(request, response);
     }
 
     /**
@@ -81,15 +88,15 @@ public class addShopServlet extends HttpServlet {
         Owner ow = (Owner) request.getSession().getAttribute("owner");
         OwnerDatabase ownerDAO = new OwnerDatabase();
         int ownerID = ow.getOwnerID();
-        String shopName = request.getParameter("name");
-        String shopAddress = request.getParameter("address");
-        Part bannerPart = request.getPart("banner");
+        String shopName = request.getParameter("Name");
+        String addressShop = request.getParameter("addressShop");
+
+        Part bannerPart = request.getPart("bannerShop");
         InputStream bannerInputStream = bannerPart.getInputStream();
 
         try {
-            if (ownerDAO.addShop(ownerID, shopName, shopAddress, bannerInputStream)) {
-                response.sendRedirect("ManageShop.jsp");
-                request.getRequestDispatcher("ManageShop.jsp").forward(request, response);
+            if (ownerDAO.addShop(ownerID, shopName, addressShop, bannerInputStream)) {
+                response.sendRedirect("listAllShop");
             } else {
                 request.setAttribute("MSG", "ngu");
                 request.getRequestDispatcher("fail.jsp").forward(request, response);
@@ -97,7 +104,7 @@ public class addShopServlet extends HttpServlet {
         } catch (SQLException ex) {
             request.setAttribute("MSG", ex);
             request.getRequestDispatcher("fail.jsp").forward(request, response);
-            Logger.getLogger(addShopServlet.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }
 

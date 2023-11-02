@@ -1230,3 +1230,14 @@ $(document).ready(function () {
         }
     });
 });
+
+function incrementValue() {
+    // Lấy giá trị hiện tại từ ô nhập
+    var currentValue = parseInt(document.getElementById('countInput').value);
+
+    // Tăng giá trị lên 1
+    var newValue = currentValue + 1;
+
+    // Gán giá trị mới vào ô nhập
+    document.getElementById('countInput').value = newValue;
+}

@@ -22,7 +22,7 @@ create table Shop(
 	ownerID int not null FOREIGN KEY references Owner(ownerID),
 	shopName nvarchar(50),
 	shopAddress nvarchar(max),
-	banner varchar(max) null,
+	banner varbinary(max) null,
 )
 
 go
@@ -31,10 +31,10 @@ create table Food(
 	shopID int not null foreign key references Shop(shopID),
 	foodName nvarchar(50),
 	price decimal(18,2),
+	imagine varbinary(max) null,
 )
 
 go
-<<<<<<< HEAD
 create table voucher(
 	dateAplied Date,
 	queriDate Date,
@@ -42,7 +42,7 @@ create table voucher(
 	voucherID int identity(1,1) primary key,
 	foodID int not null foreign key references Food(foodID)	
 )
-=======
+
 create table customer (
 	cusID INT IDENTITY(1,1) PRIMARY KEY,
 	address nvarchar(200),
@@ -80,4 +80,4 @@ create table Order1 (
 	);
 
 	
->>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
+

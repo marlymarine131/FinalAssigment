@@ -5,6 +5,7 @@
 package model;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.http.Part;
 
 /**
  *
@@ -82,7 +84,7 @@ public class OwnerDatabase {
                     }
                 }
             }
-        } 
+        }
         return null;
     }
 
@@ -114,26 +116,28 @@ public class OwnerDatabase {
 
         return ownerList;
     }
-    public boolean addShop(int ownerID,String shopName,String shopAddress,InputStream bannerStream) throws SQLException {
+
+    public boolean addShop(int ownerID, String shopName, String shopAddress, InputStream bannerStream) throws SQLException {
         String INSERT_SHOP_QUERY = "INSERT INTO Shop (ownerID, shopName, shopAddress, banner) VALUES (?, ?, ?, ?)";
-        try (Connection connection = DriverManager.getConnection(url, userId, passWord);
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SHOP_QUERY)) {
+        try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SHOP_QUERY)) {
 
             preparedStatement.setInt(1, ownerID);
             preparedStatement.setString(2, shopName);
             preparedStatement.setString(3, shopAddress);
-            preparedStatement.setBlob(8, bannerStream);
+            preparedStatement.setBlob(4, bannerStream);
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
 
-        }       
+        }
     }
+
     public List<Shop> getAllShop() {
         List<Shop> shopList = new ArrayList<>();
-        String query = "SELECT * FROM Shop";
+        String query = "SELECT * FROM Shop ";
+//                + "where ownerID = ?";
 
         try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  PreparedStatement preparedStatement = connection.prepareStatement(query);  ResultSet resultSet = preparedStatement.executeQuery()) {
-
+//            preparedStatement.setInt(1, ownerID);
             while (resultSet.next()) {
                 Shop product = new Shop();
                 product.setShopID(resultSet.getInt("shopID"));
@@ -150,5 +154,75 @@ public class OwnerDatabase {
         }
 
         return shopList;
-    } 
+    }
+
+    public boolean deleteShop(int shopID) throws SQLException {
+        try ( PreparedStatement statement = connection.prepareStatement("DELETE FROM Shop WHERE shopID = ?")) {
+            statement.setInt(1, shopID);
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+    public Shop getShopByID(int shopID) {
+        Shop shop = null;
+        String query = "SELECT * FROM Shop WHERE shopID = ?";
+        
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, shopID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                shop = new Shop();
+                shop.setShopID(resultSet.getInt("shopID"));
+                shop.setOwnerID(resultSet.getInt("ownerID"));
+                shop.setShopName(resultSet.getString("shopName"));
+                shop.setShopAddress(resultSet.getString("shopAddress"));
+                shop.setBanner(resultSet.getBytes("banner"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return shop;
+    }
+     public List<Food> getFoodsByShopID(int shopID) {
+        List<Food> foods = new ArrayList<>();
+        String query = "SELECT * FROM Food WHERE shopID = ?";
+        
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, shopID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Food food = new Food();
+                food.setFoodID(resultSet.getInt("foodID"));
+                food.setShopID(resultSet.getInt("shopID"));
+                food.setFoodName(resultSet.getString("foodName"));
+                food.setPrice(resultSet.getBigDecimal("price"));
+                food.setImagine(resultSet.getBytes("imagine"));
+
+                foods.add(food);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return foods;
+    }
+     public boolean addFood(int shopID,String foodName,String decription,BigDecimal price,InputStream image) throws SQLException {
+        String query = "INSERT INTO Food (shopID, foodName,decription, price, imagine) VALUES (?,?, ?, ?, ?)";
+        
+        try (Connection connection = DriverManager.getConnection(url, userId, passWord);
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1,shopID);
+            preparedStatement.setString(2, foodName);
+            preparedStatement.setString(3, decription);
+            preparedStatement.setBigDecimal(4, price);
+            preparedStatement.setBlob(5, image);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+
 }

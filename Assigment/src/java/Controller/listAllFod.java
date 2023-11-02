@@ -6,17 +6,19 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.*;
 
 /**
  *
  * @author oteee
  */
-public class logOut extends HttpServlet {
+public class listAllFod extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,10 +37,10 @@ public class logOut extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet logOut</title>");            
+            out.println("<title>Servlet listAllFod</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet logOut at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet listAllFod at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -56,13 +58,20 @@ public class logOut extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate(); // Invalidate the session, logging out the user
-        }
+        int shopID = Integer.parseInt(request.getParameter("shopID"));
+        // Use FoodDAO to get the list of foods for the given shopID
+        
+        OwnerDatabase foodDAO = new OwnerDatabase();
+        HttpSession session = request.getSession();
+        Shop sh = foodDAO.getShopByID(shopID);
+        session.setAttribute("shop", sh);
+        List<Food> foods = foodDAO.getFoodsByShopID(shopID);
 
-        // Redirect to the login page or any other page after logout
-        response.sendRedirect("index.jsp");
+        // Set the list of foods in the request attribute
+        request.setAttribute("listFoods", foods);
+
+        // Forward to a JSP page to display the list of foods
+        request.getRequestDispatcher("ManageShop1.jsp").forward(request, response);
     }
 
     /**

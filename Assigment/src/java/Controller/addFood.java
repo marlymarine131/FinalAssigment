@@ -5,16 +5,27 @@
 package Controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import model.*;
 
 /**
  *
  * @author oteee
  */
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2 MB
+        maxFileSize = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize = 1024 * 1024 * 50 // 50 MB
+)
 public class addFood extends HttpServlet {
 
     /**
@@ -34,7 +45,7 @@ public class addFood extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet addFood</title>");            
+            out.println("<title>Servlet addFood</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet addFood at " + request.getContextPath() + "</h1>");
@@ -55,7 +66,7 @@ public class addFood extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.getRequestDispatcher("ManageShop1.jsp").forward(request, response);
     }
 
     /**
@@ -69,7 +80,28 @@ public class addFood extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        Shop sh = (Shop) request.getSession().getAttribute("shop");
+        String foodName = request.getParameter("foodName");
+
+        String description = request.getParameter("description");
+        // Đọc file hình ảnh
+        BigDecimal price = new BigDecimal(request.getParameter("price"));
+        OwnerDatabase ow = new OwnerDatabase();
+        // Get the input stream of the image file
+        Part filePart = request.getPart("imagine");
+        InputStream inputStream = filePart.getInputStream();
+
+        try {
+            if (ow.addFood(sh.getShopID(), foodName, description, price, inputStream)) {
+                response.sendRedirect("listAllFod");
+            } else {
+                request.setAttribute("MSG", "ngu");
+                request.getRequestDispatcher("fail.jsp").forward(request, response);
+            }
+        } catch (SQLException ex) {
+            request.setAttribute("MSG", ex);
+            request.getRequestDispatcher("fail.jsp").forward(request, response);
+        }
     }
 
     /**

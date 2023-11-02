@@ -6,9 +6,9 @@
 
 
 <%@include file="includes/head.jsp" %>
+<%@include file="includes/Header.jsp" %>
 
-
-<body>
+<section>
     <div class="container">
         <div class="table-wrapper">
             <div class="table-title">
@@ -33,39 +33,40 @@
                         <th></th>
 
                         <th>Name</th>
-                        <th>Image</th>
-                        <th>Price</th>
-                        <th>Actions</th>
+
+                        <th>Location</th>
+                        <th>banner</th>
+                        <th>action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach items="${productList}" var="o">
+                    <c:forEach items="${shopList}" var="o">
                         <tr>
-                            <!-- Your existing table rows -->
-                            <td>
-                                <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox1" name="options[]" value="1">
-                                    <label for="checkbox1"></label>
-                                </span>
-                            </td>
                             <td>${o.shopID}</td>
+                            <td>${o.shopAddress}</td>
+
                             <td>${o.shopName}</td>
-                            <c:set var="base64Banner" value="${Base64.getEncoder().encodeToString(o.banner)}" />
-                    <div class="row row-10 gutters-10">
-                        <div class="col-12"><img src="data:image/jpeg;base64,${base64Banner}" alt="" width="394" height="255"/>
-                        </div>
-                    </div>
-                    <td>${o.price} $</td>
-                    <td>
-                        <a href="loadProduct?pid=${o.shopID}" class="edit" data-toggle="modal">
-                            <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
-                        </a>
-                        <a href="delete?pid=${o.shopID}" class="delete" data-toggle="modal">
-                            <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
-                        </a>
-                    </td>
-                    </tr>
-                </c:forEach>
+                            <td>
+                                <c:set var="base64Banner" value="${Base64.getEncoder().encodeToString(o.banner)}" />
+                                <div class="row row-10 gutters-10">
+                                    <div class="col-12">
+                                        <a href="listAllFod?shopID=${o.shopID}">
+                                            <img src="data:image/jpeg;base64,${base64Banner}" alt="" width="394" height="255"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+
+                                <a href="ManageFood.jsp?Shopid=${o.shopID}" class="edit">
+                                    <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
+                                </a>
+                                <a href="deleteShop?shopId=${o.shopID}" class="delete">
+                                    <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
+                                </a>
+                            </td>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
             <div class="clearfix">
@@ -81,50 +82,58 @@
                 </ul>
             </div>
         </div>
-        <a href="#"><button type="button" class="btn btn-primary">Back to home</button>
-            <form action="addShopServlet" method="post">
-                <div class="modal-header">						
-                    <h4 class="modal-title">add shop</h4>                       
-                </div>
-                <div class="modal-body">					
-                    <div class="form-group">
-                        ${sessionScope.owner.ownerName}
-                        <label>Name</label>
-                        <input name="name" type="text" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Banner</label>
-                        <div class="image-container">
-                            <label for="banner" class="signup-label">Banner</label>
-                            <input type="file" name="banner" id="banner" accept="image/*" onchange="displayImage(this)">
-                            <div class="custom-upload" onclick="document.getElementById('banner').click()">
-                                chose the banner
-                            </div>
-                            <img id="previewImage" src="#" alt="Preview" style="display: none;">
+        <a href="url"><button type="button" class="btn btn-primary">Back to home</button></a>
+        <div id="addEmployeeModal" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="addNewShop" enctype="multipart/form-data" method="post">
+                        <div class="modal-header">						
+                            <h4 class="modal-title">Add Shop</h4>                       
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Price</label>
-                        <input name="price" type="text" class="form-control" required>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <input name="shopID" type="hidden" class="form-control" value="${sessionScope.owner.ownerID}">
+                            </div>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input name="Name" type="text" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input name="addressShop" type="text" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Banner</label>
+                                <div class="image-container">
+                                    <label for="banner" class="signup-label">Banner</label>
+                                    <input type="file" name="bannerShop" id="banner" accept="image/*" onchange="displayImage(this)">
+                                    <div class="custom-upload" onclick="document.getElementById('banner').click()">
+                                        Choose the banner
+                                    </div>
+                                    <img id="previewImage" src="#" alt="Preview" style="display: none;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                            <input type="submit" class="btn btn-success" value="Add">
+                        </div>
+                    </form>
+
+
+
+
+                </div>
+            </div>
+            <!-- Edit Modal HTML -->
+            <div id="addEmployeeModal" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="submit" class="btn btn-success" value="Add">
-                </div>
-            </form>
-
-    </div>
-    <!-- Edit Modal HTML -->
-    <div id="addEmployeeModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
             </div>
         </div>
-    </div>
+</section>
 
-
-
-</body>
-</html>
+<%@include file="includes/Footer.jsp" %>

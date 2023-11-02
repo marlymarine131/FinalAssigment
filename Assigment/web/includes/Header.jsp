@@ -22,7 +22,8 @@
                     </div>
                     <div class="rd-navbar-main-element">
                         <div class="rd-navbar-nav-wrap">
-                            <!-- RD Navbar Basket-->                           <div class="rd-navbar-basket-wrap">
+                            <!-- RD Navbar Basket-->                           
+                            <div class="rd-navbar-basket-wrap">
                                 <button class="rd-navbar-basket fl-bigmug-line-shopping198" data-rd-navbar-toggle=".cart-inline"><span>2</span></button>
                                 <div class="cart-inline">
                                     <div class="cart-inline-header">
@@ -81,13 +82,10 @@
                             </div>
                             <!-- RD Navbar Nav-->
                             <ul class="rd-navbar-nav">                              
-                                <li class="rd-nav-item"><a class="rd-nav-link" href="addNewAccout.jsp">sign up</a>
-                                </li>
-                                <li class="rd-nav-item"><a class="rd-nav-link" href="login.jsp">login</a>
-                                </li>
+
 
                                 <c:if test="${not empty sessionScope.owner}">
-                                    <li>class="rd-nav-item"><a class="rd-nav-link" href="ManageShop.jsp">manage shop</a>                                  
+                                    <li>class="rd-nav-item"><a class="rd-nav-link" href="listAllShop">manage shop</a>                                  
                                     </li>
                                 </c:if>
 
@@ -124,6 +122,16 @@
                                         <p>Welcome, ${sessionScope.owner.ownerName}!</p>
                                     </div>
                                 </c:if>
+                                <c:choose>
+                                    <c:when test="${not empty sessionScope}">
+                                        <li class="rd-nav-item"><a class="rd-nav-link" href="logOut">logout</a></li>
+                                        </c:when>
+                                        <c:otherwise>
+                                        <li class="rd-nav-item"><a class="rd-nav-link" href="login.jsp">login</a></li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                <li class="rd-nav-item"><a class="rd-nav-link" href="addNewAccout.jsp">sign up</a>
+                                </li>
                                 <ul class="rd-navbar-modern-contacts">
                                     <li>
                                         <div class="unit unit-spacing-sm">

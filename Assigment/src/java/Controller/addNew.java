@@ -7,7 +7,7 @@ package Controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-<<<<<<< HEAD
+
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,24 +15,24 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-=======
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.servlet.RequestDispatcher;
->>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-<<<<<<< HEAD
+
 import javax.servlet.http.Part;
 
 import model.OwnerDatabase;
-=======
+
 import model.DatabaseConnector;
->>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
+
 
 /**
  *
@@ -121,7 +121,8 @@ public class addNew extends HttpServlet {
                     request.setAttribute("MSG", "chuc mung chu");
                     request.getRequestDispatcher("fail.jsp").forward(request, response);
                 } else {
-
+                    request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
+                    request.getRequestDispatcher("login.jsp").forward(request, response);
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(addNew.class.getName()).log(Level.SEVERE, null, ex);
@@ -138,8 +139,6 @@ public class addNew extends HttpServlet {
             response.getWriter().println("Invalid Role");
         }
 
-<<<<<<< HEAD
-=======
         if (email == null || email.isEmpty() || password == null || password.isEmpty()
                 || conPassword == null || conPassword.isEmpty() || role == null || role.isEmpty()) {
             response.sendRedirect("addNewAccout.jsp?error=Please fill in all fields");
@@ -194,8 +193,6 @@ public class addNew extends HttpServlet {
                 response.sendRedirect("addNewAccout.jsp?error=Database error" + e);
             }
         }
-
->>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
     }
 
     /**

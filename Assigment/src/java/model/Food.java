@@ -12,25 +12,26 @@ import java.util.Arrays;
  * @author oteee
  */
 public class Food {
-
-    private int foodID;
+private int foodID;
     private int shopID;
     private String foodName;
+    private String description;
     private BigDecimal price;
     private byte[] imagine;
 
-    // Constructors
     public Food() {
     }
 
-    public Food(int shopID, String foodName, BigDecimal price, byte[] imagine) {
+    public Food(int foodID, int shopID, String foodName, String description, BigDecimal price, byte[] imagine) {
+        this.foodID = foodID;
         this.shopID = shopID;
         this.foodName = foodName;
+        this.description = description;
         this.price = price;
         this.imagine = imagine;
     }
 
-    // Getters and setters
+
     public int getFoodID() {
         return foodID;
     }
@@ -55,6 +56,14 @@ public class Food {
         this.foodName = foodName;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public BigDecimal getPrice() {
         return price;
     }
@@ -71,7 +80,6 @@ public class Food {
         this.imagine = imagine;
     }
 
-    // toString method (optional)
     @Override
     public String toString() {
         return "Food [foodID=" + foodID + ", shopID=" + shopID + ", foodName=" + foodName

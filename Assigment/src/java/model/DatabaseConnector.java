@@ -6,26 +6,23 @@ package model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-<<<<<<< HEAD
+
 import java.sql.SQLException;
-=======
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
->>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
+
 
 /**
  *
  * @author Hung Nguyen
  */
 public class DatabaseConnector {
-<<<<<<< HEAD
 
-=======
     protected Connection connection;
->>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
     private static final String JDBC_URL = "jdbc:sqlserver://PHIHUNG:1433;databaseName=FastFoodAtYourDoor";
     private static final String USER = "sa";
     private static final String PASSWORD = "phihung1902";
@@ -38,8 +35,7 @@ public class DatabaseConnector {
             throw new SQLException("Database driver not found", e);
         }
     }
-<<<<<<< HEAD
-=======
+
     public boolean isEmailDup(String email){
         List<String> cu = new ArrayList<>();
         String query = "select email from customer";
@@ -57,5 +53,4 @@ public class DatabaseConnector {
         }    
         return false;
     }
->>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
 }

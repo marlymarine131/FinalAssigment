@@ -124,5 +124,8 @@
 <script src="js/core.min.js"></script>
 <script src="js/script.js"></script>
 <!-- coded by Ragnar-->
+<script src="js/manager.js" type="text/javascript"></script>
+</body>
+</html>
 </body>
 </html>

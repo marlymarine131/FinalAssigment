@@ -4,8 +4,8 @@
     Author     : oteee
 --%>
 
-<%@include file="includes/head.jsp" %>>
-<%@include file="includes/Header.jsp" %>>
+<%@include file="includes/head.jsp" %>
+<%@include file="includes/Header.jsp" %>
 <!DOCTYPE html>
 <section>
     <div class="signup">
@@ -38,4 +38,4 @@
 
 </section>
 
-<%@include file="includes/Footer.jsp" %>>
+<%@include file="includes/Footer.jsp" %>

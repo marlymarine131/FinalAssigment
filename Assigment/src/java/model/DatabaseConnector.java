@@ -23,9 +23,9 @@ import java.util.List;
 public class DatabaseConnector {
 
     protected Connection connection;
-    private static final String JDBC_URL = "jdbc:sqlserver://PHIHUNG:1433;databaseName=FastFoodAtYourDoor";
+    private static final String JDBC_URL = "jdbc:sqlserver://LAPTOP-URP60GBI\\SQLEXPRESS:1433;databaseName=FastFoodAtYourDoor";
     private static final String USER = "sa";
-    private static final String PASSWORD = "phihung1902";
+    private static final String PASSWORD = "1234";
 
     public static Connection getConnection() throws SQLException {
         try {

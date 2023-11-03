@@ -25,7 +25,7 @@
         <servlet-class>Controller.listAllServlet</servlet-class>
     </servlet>
     <servlet>
-            <servlet-name>addFood</servlet-name>
+        <servlet-name>addFood</servlet-name>
         <servlet-class>Controller.addFood</servlet-class>
     </servlet>
     <servlet>
@@ -55,6 +55,10 @@
     <servlet>
         <servlet-name>deleteShop</servlet-name>
         <servlet-class>Controller.deleteShop</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>brosing</servlet-name>
+        <servlet-class>Controller.brosing</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>login</servlet-name>
@@ -112,12 +116,16 @@
         <servlet-name>deleteShop</servlet-name>
         <url-pattern>/deleteShop</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>brosing</servlet-name>
+        <url-pattern>/brosing</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>shop-grid.jsp</welcome-file>
     </welcome-file-list>
 </web-app>

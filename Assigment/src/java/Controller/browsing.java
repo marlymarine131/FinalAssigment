@@ -6,10 +6,15 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.Food;
+import model.OwnerDatabase;
+import model.Shop;
 
 /**
  *
@@ -55,7 +60,18 @@ public class browsing extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
+        // Use FoodDAO to get the list of foods for the given shopID
+        
+        OwnerDatabase foodDAO = new OwnerDatabase();
+
+        List<Food> foods = foodDAO.getFoods();
+
+        // Set the list of foods in the request attribute
+        request.setAttribute("listFoods", foods);
+
+        // Forward to a JSP page to display the list of foods
+        request.getRequestDispatcher("shop-grid.jsp").forward(request, response);
     }
 
     /**

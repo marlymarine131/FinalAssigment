@@ -379,4 +379,4 @@
         </div>
     </div>
 </section>
-<%@include file="includes/Footer.jsp" %>>
+<%@include file="includes/Footer.jsp" %>

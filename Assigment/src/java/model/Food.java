@@ -12,7 +12,7 @@ import java.util.Arrays;
  * @author oteee
  */
 public class Food {
-private int foodID;
+    private int foodID;
     private int shopID;
     private String foodName;
     private String description;

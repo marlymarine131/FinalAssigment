@@ -65,6 +65,14 @@
                             </td>
                         </tr>
                     </c:forEach>
+
+                    <c:forEach var="cartItem" items="${listFoods}">
+                        <tr>
+                            <td>${cartItem.foodID}</td>
+                            <td>${cartItem.cartID}</td>
+                            <td>${cartItem.cusID} $</td> 
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
             <div class="clearfix">
@@ -102,37 +110,37 @@
         <div class="modal-content">
             <form action="addFood" enctype="multipart/form-data" method="post">
                 <div class="modal-header">						
-                        <h4 class="modal-title">Add Food</h4>                       
+                    <h4 class="modal-title">Add Food</h4>                       
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Food Name</label>
+                        <input name="foodName" type="text" class="form-control" required>
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>Food Name</label>
-                            <input name="foodName" type="text" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <input name="description" type="text" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Price</label>
-                            <input name="price" type="text" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Imagine</label>
-                            <div class="image-container">
-                                <label for="imagine" class="signup-label">image</label>
-                                <input type="file" name="imagine" id="banner" accept="image/*" onchange="displayImage(this)">
-                                <div class="custom-upload" onclick="document.getElementById('banner').click()">
-                                    Choose the image
-                                </div>
-                                <img id="previewImage" src="#" alt="Preview" style="display: none;">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input name="description" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input name="price" type="text" clas    s="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Imagine</label>
+                        <div class="image-container">
+                            <label for="imagine" class="signup-label">image</label>
+                            <input type="file" name="imagine" id="banner" accept="image/*" onchange="displayImage(this)">
+                            <div class="custom-upload" onclick="document.getElementById('banner').click()">
+                                Choose the image
                             </div>
+                            <img id="previewImage" src="#" alt="Preview" style="display: none;">
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-success" value="Add">
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    <input type="submit" class="btn btn-success" value="Add">
+                </div>
             </form>
         </div>
     </div>

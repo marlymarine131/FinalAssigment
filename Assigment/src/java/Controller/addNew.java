@@ -28,11 +28,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import javax.servlet.http.Part;
+import model.Customer;
 
 import model.OwnerDatabase;
 
 import model.DatabaseConnector;
-
 
 /**
  *
@@ -57,7 +57,7 @@ public class addNew extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        try ( PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -132,6 +132,55 @@ public class addNew extends HttpServlet {
 
         } else if ("Customer".equals(role)) {
 
+            String address = request.getParameter("address");
+            String phone = request.getParameter("phone");
+
+            String name = request.getParameter("name");
+
+            if (email == null || email.isEmpty() || password == null || password.isEmpty()
+                    || conPassword == null || conPassword.isEmpty() || role == null || role.isEmpty()) {
+                response.sendRedirect("addNewAccout.jsp?error=Please fill in all fields");
+                return;
+            }
+            if (!password.equals(conPassword)) {
+                response.sendRedirect("addNewAccout.jsp?error=Password do not match");
+                return;
+            }
+            if (!email.matches("\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b")) {
+                response.sendRedirect("addNewAccout.jsp?error=Invalid email format");
+                return;
+            }
+            try {
+                Connection connection = DatabaseConnector.getConnection();
+
+                String insertQuery = "INSERT INTO customer (address, phone, password, name, email) VALUES (?, ?, ?, ?, ?)";
+                try ( PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+                    
+                    preparedStatement.setString(1, address); // Giá trị cho tham số 1
+                    preparedStatement.setString(2, phone); // Giá trị cho tham số 3
+                    preparedStatement.setString(3, password); // Giá trị cho tham số 4
+                    preparedStatement.setString(4, name); // Giá trị cho tham số 5
+                    preparedStatement.setString(5, email); // Giá trị cho tham số 
+                    int rowsAffected = preparedStatement.executeUpdate();
+                    if (rowsAffected > 0) {
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
+                        dispatcher.forward(request, response);
+                    } else {
+                        response.sendRedirect("addNewAccout.jsp?error=Failed to add new account");
+                    }
+                }
+                connection.setAutoCommit(false);
+
+            } catch (SQLException e) {
+
+                e.printStackTrace(); // In thông tin lỗi vào console
+                // Xử lý ngoại lệ SQL
+                if (e.getSQLState().equals("23505") || e.getMessage().contains("unique constraint")) {
+                    response.sendRedirect("addNewAccout.jsp?error=Email already registered");
+                } else {
+                    response.sendRedirect("addNewAccout.jsp?error=Database error" + e);
+                }
+            }
         } else if ("Shipper".equals(role)) {
 
         } else {
@@ -139,60 +188,6 @@ public class addNew extends HttpServlet {
             response.getWriter().println("Invalid Role");
         }
 
-        if (email == null || email.isEmpty() || password == null || password.isEmpty()
-                || conPassword == null || conPassword.isEmpty() || role == null || role.isEmpty()) {
-            response.sendRedirect("addNewAccout.jsp?error=Please fill in all fields");
-            return;
-        }
-        if (!password.equals(conPassword)) {
-            response.sendRedirect("addNewAccout.jsp?error=Password do not match");
-            return;
-        }
-        if (!email.matches("\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b")) {
-            response.sendRedirect("addNewAccout.jsp?error=Invalid email format");
-            return;
-        }
-//        if ("Customer".equals(role)) {
-//            String customerField = request.getParameter("customerField");
-//            if (customerField == null || customerField.isEmpty()) {
-//                response.sendRedirect("addNewAccout.jsp?error=Please fill in Customer Field 1");
-//                return;
-//            }
-//        }
-        try {
-            Connection connection = DatabaseConnector.getConnection();
-
-            String insertQuery = "INSERT INTO customer (address, Username, phone, password, name, email) VALUES (?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
-                preparedStatement.setString(1, "Dia chi"); // Giá trị cho tham số 1
-                preparedStatement.setString(2, "TenDangNhap"); // Giá trị cho tham số 2
-                preparedStatement.setString(3, "0849431868"); // Giá trị cho tham số 3
-                preparedStatement.setString(4, password); // Giá trị cho tham số 4
-                preparedStatement.setString(5, "HoTen"); // Giá trị cho tham số 5
-                preparedStatement.setString(6, email); // Giá trị cho tham số 
-
-                int rowsAffected = preparedStatement.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    request.setAttribute("signupSuccess", true);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("success.jsp");
-                    dispatcher.forward(request, response);
-                } else {
-                    response.sendRedirect("addNewAccout.jsp?error=Failed to add new account");
-                }
-            }
-            connection.setAutoCommit(false);
-
-        } catch (SQLException e) {
-            
-            e.printStackTrace(); // In thông tin lỗi vào console
-            // Xử lý ngoại lệ SQL
-            if (e.getSQLState().equals("23505") || e.getMessage().contains("unique constraint")) {
-                response.sendRedirect("addNewAccout.jsp?error=Email already registered");
-            } else {
-                response.sendRedirect("addNewAccout.jsp?error=Database error" + e);
-            }
-        }
     }
 
     /**

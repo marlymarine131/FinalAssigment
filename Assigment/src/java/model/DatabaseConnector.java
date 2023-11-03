@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  *
  * @author Hung Nguyen
@@ -36,21 +35,57 @@ public class DatabaseConnector {
         }
     }
 
-    public boolean isEmailDup(String email){
+    public boolean isEmailDup(String email) {
         List<String> cu = new ArrayList<>();
         String query = "select email from customer";
 
-        try ( PreparedStatement preparedStatement = connection.prepareStatement(query);  
-                ResultSet resultSet = preparedStatement.executeQuery()) {
+        try ( PreparedStatement preparedStatement = connection.prepareStatement(query);  ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
                 cu.add(resultSet.getString("email"));
             }
-        } catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         for (String string : cu) {
-            if(email.equals(string)) return true;
-        }    
+            if (email.equals(string)) {
+                return true;
+            }
+        }
         return false;
     }
+
+    public boolean insertToCart(int foodID,int cusID) throws SQLException {
+        String sql = "INSERT INTO OrderDetail (foodID, cusID) VALUES (?, ?)";
+        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD); 
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)
+                ) {
+            preparedStatement.setInt(1, foodID);
+            preparedStatement.setInt(2, cusID);
+            int rowsInserted = preparedStatement.executeUpdate();
+            return rowsInserted > 0;
+        } 
+    }
+    public static Customer selectCustomer(int cusID) {
+        String query = "SELECT * FROM customer WHERE cusID = ?";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, cusID);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                Customer customer = new Customer();
+                customer.setCustomerID(resultSet.getInt("cusID"));
+                customer.setAddress(resultSet.getString("address"));
+                customer.setName(resultSet.getString("Username"));
+                customer.setPhone(resultSet.getString("phone"));
+                customer.setPassWord(resultSet.getString("password"));
+                customer.setName(resultSet.getString("name"));
+                customer.setEmail(resultSet.getString("email"));
+                return customer;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
 }

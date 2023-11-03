@@ -241,7 +241,7 @@
                         <ul>
                             <c:choose>
                                 <c:when test="${not empty sessionScope}">
-                                   <li><i class="fa fa-envelope"></i> sessionScope.owner.ownerName</li>
+                                   <li><i class="fa fa-envelope"></i> ${sessionScope.owner.ownerName}</li>
                                     </c:when>
                                     <c:otherwise>
                                                                    
@@ -276,7 +276,9 @@
                                     <c:otherwise>
                                     <a href="login"><i class="fa fa-user"></i> Login</a>                                 
                                     </c:otherwise>
+                                      
                                 </c:choose>
+                                    <a href="addNewAccout.jsp"><i class="fa fa-user"></i> sign Up</a> 
                             
                         </div>
                     </div>
@@ -299,7 +301,7 @@
                         <li><a href="#">Pages</a>
                             <ul class="header__menu__dropdown">
                                 <li><a href="./shop-details.jsp">Shop Details</a></li>
-                                <li><a href="./shoping-cart.jsp">Shoping Cart</a></li>
+                                <li><a href="cartBrowsing">Shoping Cart</a></li>
                                 <li><a href="./checkout.jsp">Check Out</a></li>
                                 <li><a href="./blog-details.jsp">Blog Details</a></li>
                             </ul>

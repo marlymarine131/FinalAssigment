@@ -46,7 +46,6 @@ go
 create table customer (
 	cusID INT IDENTITY(1,1) PRIMARY KEY,
 	address nvarchar(200),
-	Username varchar(20),
 	phone varchar(10) check (phone like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
 	password varchar(20) not null,
 	name nvarchar(50),
@@ -69,25 +68,26 @@ create table Order1 (
 	ShipperID int null,
 	cusID int not null,
 	foodID int not null,
+	cartID int not null,
 	address nvarchar(200),
 	quantity int,
 	total_price decimal(18,2),
 	status nvarchar(50),
-	foreign key (shopID) references Shop(shopID),
 	foreign key (ShipperID) references Shipper(ShipperID),
 	foreign key (cusID) references Customer(cusID),
-	foreign key (foodID) references Food(foodID)
+	foreign key (cartID) references OrderDetail(cartID),
 	);
-
-	create table OrderDetail(
-	foodID int FOREIGN KEY references Food(foodID)
+create table OrderDetail(
+	cartID int IDENTITY(1,1) primary key,
+	foodID int FOREIGN KEY references Food(foodID),
+	cusID int FOREIGN KEY references customer(cusID),
 )
 create table OrderShop(
-	OrderID
+	shopID int ,
+	foodID int ,
+	OrderID int ,
 )
-create table OrderDetail(
-	foodID int FOREIGN KEY references Food(foodID)
-)
+
 
 	
 

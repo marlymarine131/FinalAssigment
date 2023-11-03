@@ -21,28 +21,27 @@ public class Cart {
     public Cart(List<ShoppingCartItem> lists) {
         this.lists = lists;
     }
-    public void addItem(Food food, int quantity) {
-        // Check if the item already exists in the cart
-        for (ShoppingCartItem list : lists) {
-            if (list.getFood().getFoodID() == food.getFoodID()) {
-                list.setQuantity(list.getQuantity() + quantity);
-                return;
-            }
-        }
-        ShoppingCartItem newItem = new ShoppingCartItem();
-        newItem.setFood(food);
-        newItem.setQuantity(quantity);
-        lists.add(newItem);
-    }
+//    public void addItem(Food food) {
+//        // Check if the item already exists in the cart
+//        for (ShoppingCartItem list : lists) {
+//            if (list.getFood().getFoodID() == food.getFoodID()) {
+//                list.setQuantity(list.getQuantity());
+//                return;
+//            }
+//        }
+//        ShoppingCartItem newItem = new ShoppingCartItem();
+//        newItem.setFood(food);
+//        lists.add(newItem);
+//    }
     
-     public void removeItem(int foodID) {
-        lists.removeIf(list -> list.getFood().getFoodID() == foodID);
-    }
-    
-     public List<ShoppingCartItem> getItems() {
-        return lists;
-    }
-      public void clearCart() {
-        lists.clear();
-    }
+//     public void removeItem(int foodID) {
+//        lists.removeIf(list -> list.getFood().getFoodID() == foodID);
+//    }
+//    
+//     public List<ShoppingCartItem> getItems() {
+//        return lists;
+//    }
+//      public void clearCart() {
+//        lists.clear();
+//    }
 }

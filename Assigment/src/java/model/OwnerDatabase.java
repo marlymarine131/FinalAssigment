@@ -211,8 +211,29 @@ public class OwnerDatabase {
 
         return foods;
     }
-    
-    
+
+    public Food getFoodbyID(int foodID) {
+
+        String query = "SELECT * FROM Food where foodID = ?";
+        try ( PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, foodID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Food food = new Food();
+                food.setFoodID(resultSet.getInt("foodID"));
+                food.setShopID(resultSet.getInt("shopID"));
+                food.setFoodName(resultSet.getString("foodName"));
+                food.setPrice(resultSet.getBigDecimal("price"));
+                food.setImagine(resultSet.getBytes("imagine"));
+                return food;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<Food> getFoods() {
         List<Food> foods = new ArrayList<>();
         String query = "SELECT * FROM Food";
@@ -250,6 +271,53 @@ public class OwnerDatabase {
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         }
+    }
+
+    public List<ShoppingCartItem> listCard() {
+        List<ShoppingCartItem> foods = new ArrayList<>();
+        String query = "select * from OrderDetail";
+        try ( Connection connection = DriverManager.getConnection(url, userId, passWord); 
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                ShoppingCartItem cs = new ShoppingCartItem();
+                cs.setCartID(resultSet.getInt("cartID"));
+                cs.setFoodID(resultSet.getInt("foodID"));
+                cs.setCusID(resultSet.getInt("cusID"));
+                foods.add(cs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return foods;
+    }
+
+    public List<Food> listCartFood(int cusID) {
+        List<Food> foods = new ArrayList<>();
+        String query = "select c.foodID,c.foodName,c.price,c.shopID,c.decription,c.imagine\n"
+                + "from customer a inner join OrderDetail b on a.cusID  = b.cusID\n"
+                + "inner join Food c on c.foodID = b.foodID "
+                + "where  a.cusID = ?";
+        try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, cusID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Food food = new Food();
+                food.setFoodID(resultSet.getInt("foodID"));
+                food.setShopID(resultSet.getInt("shopID"));
+                food.setFoodName(resultSet.getString("foodName"));
+                food.setDescription(resultSet.getString("decription"));
+                food.setPrice(resultSet.getBigDecimal("price"));
+                food.setImagine(resultSet.getBytes("imagine"));
+                foods.add(food);
+            }
+            return foods;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return foods;
     }
 
 }

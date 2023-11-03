@@ -95,7 +95,7 @@ public class loginServlet extends HttpServlet {
                 ow = ownerDAO.loginOwner(email, password);
                 if (ow != null) {
                     HttpSession session = request.getSession();
-                    session.setAttribute("owner", ow);
+                    session.setAttribute("accout", ow);
                     request.getRequestDispatcher("shop-grid.jsp").forward(request, response);
                 } else {
                     request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
@@ -113,14 +113,24 @@ public class loginServlet extends HttpServlet {
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
             try ( Connection connection = DatabaseConnector.getConnection()) {
-                String insertQuery = "SELECT email, password FROM customer WHERE email=? AND password=?";
+                String insertQuery = "SELECT * FROM customer WHERE email=? AND password=?";
                 try ( PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
                     preparedStatement.setString(1, email);
                     preparedStatement.setString(2, password);
-
                     try ( ResultSet resultSet = preparedStatement.executeQuery()) {
                         if (resultSet.next()) {
-                            response.sendRedirect("success.jsp");
+                            Customer customer = new Customer();
+                            customer.setCustomerID(resultSet.getInt("cusID"));
+                            customer.setAddress(resultSet.getString("address"));
+                            customer.setPhone(resultSet.getString("phone"));
+                            customer.setPassWord(resultSet.getString("password"));
+                            customer.setName(resultSet.getString("name"));
+                            customer.setEmail(resultSet.getString("email"));
+
+                            HttpSession session = request.getSession();
+                            session.setAttribute("accout",customer);
+                            request.getRequestDispatcher("shop-grid.jsp").forward(request, response);
+
                         } else {
                             request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
                             request.getRequestDispatcher("login.jsp").forward(request, response);

@@ -10,6 +10,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="model.*" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -17,25 +19,14 @@
         <title>JSP Page</title>
     </head>
     <body>
-<<<<<<< HEAD
-        <h1>Chúc Mừng chú</h1>
-=======
-        <%
-            if(request.getAttribute("signupSuccess") != null && (boolean)request.getAttribute("signupSuccess")){
-            %>
-            <div class="notification success">
-                <p>Sign up successful!</p>
-            </div>
-            <%
-                RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
-                dispatcher.forward(request, response);
-                %>
-                <%
-            }
-            %>
-            
-            <h1>Success Page</h1>
-            
->>>>>>> 54393f68c438b9b0a3cfc0a995ac126ec9a9d20e
-    </body>
+        <p>1</p>
+        <c:forEach var="food1" items="${listFoods}">
+            <p>1</p>
+        <tr>
+            <td>${food1.foodID}</td>
+            <td>${food1.cartID}</td>
+            <td>${food1.cusID} $</td> 
+        </tr>
+    </c:forEach>
+</body>
 </html>

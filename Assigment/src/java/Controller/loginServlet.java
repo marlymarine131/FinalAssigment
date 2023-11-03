@@ -71,7 +71,6 @@ public class loginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect("login.jsp");
         request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 
@@ -97,7 +96,7 @@ public class loginServlet extends HttpServlet {
                 if (ow != null) {
                     HttpSession session = request.getSession();
                     session.setAttribute("owner", ow);
-                    request.getRequestDispatcher("index.jsp").forward(request, response);
+                    request.getRequestDispatcher("shop-grid.jsp").forward(request, response);
                 } else {
                     request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
                     request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -110,11 +109,10 @@ public class loginServlet extends HttpServlet {
 
         } else if ("Customer".equals(role)) {
             if (email == null || email.isEmpty() || password == null || password.isEmpty() || role == null || role.isEmpty()) {
-                response.sendRedirect("login.jsp?error=Please fill in all fields");
-                return;
+                request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
             }
             try ( Connection connection = DatabaseConnector.getConnection()) {
-
                 String insertQuery = "SELECT email, password FROM customer WHERE email=? AND password=?";
                 try ( PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
                     preparedStatement.setString(1, email);
@@ -124,17 +122,15 @@ public class loginServlet extends HttpServlet {
                         if (resultSet.next()) {
                             response.sendRedirect("success.jsp");
                         } else {
-                            response.sendRedirect("login.jsp?error=Invalid email or password");
+                            request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
+                            request.getRequestDispatcher("login.jsp").forward(request, response);
                         }
                     }
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendRedirect("login.jsp?error=Database error" + e);
-
             }
-
         }
 //        else if ("Shipper".equals(role)) {
 //            if (ShiperDB.loginShipper(email, password)) {
@@ -154,8 +150,6 @@ public class loginServlet extends HttpServlet {
     }// </editor-fold>
 
 }
-
-
 
 /**
  * Returns a short description of the servlet.

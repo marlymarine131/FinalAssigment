@@ -163,11 +163,12 @@ public class OwnerDatabase {
             return rowsAffected > 0;
         }
     }
+
     public Shop getShopByID(int shopID) {
         Shop shop = null;
         String query = "SELECT * FROM Shop WHERE shopID = ?";
-        
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+        try ( PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, shopID);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -185,11 +186,12 @@ public class OwnerDatabase {
 
         return shop;
     }
-     public List<Food> getFoodsByShopID(int shopID) {
+
+    public List<Food> getFoodsByShopID(int shopID) {
         List<Food> foods = new ArrayList<>();
         String query = "SELECT * FROM Food WHERE shopID = ?";
-        
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+        try ( PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, shopID);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -209,12 +211,37 @@ public class OwnerDatabase {
 
         return foods;
     }
-     public boolean addFood(int shopID,String foodName,String decription,BigDecimal price,InputStream image) throws SQLException {
+    
+    
+    public List<Food> getFoods() {
+        List<Food> foods = new ArrayList<>();
+        String query = "SELECT * FROM Food";
+
+        try ( PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Food food = new Food();
+                food.setFoodID(resultSet.getInt("foodID"));
+                food.setShopID(resultSet.getInt("shopID"));
+                food.setFoodName(resultSet.getString("foodName"));
+                food.setPrice(resultSet.getBigDecimal("price"));
+                food.setImagine(resultSet.getBytes("imagine"));
+
+                foods.add(food);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return foods;
+    }
+
+    public boolean addFood(int shopID, String foodName, String decription, BigDecimal price, InputStream image) throws SQLException {
         String query = "INSERT INTO Food (shopID, foodName,decription, price, imagine) VALUES (?,?, ?, ?, ?)";
-        
-        try (Connection connection = DriverManager.getConnection(url, userId, passWord);
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1,shopID);
+
+        try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, shopID);
             preparedStatement.setString(2, foodName);
             preparedStatement.setString(3, decription);
             preparedStatement.setBigDecimal(4, price);

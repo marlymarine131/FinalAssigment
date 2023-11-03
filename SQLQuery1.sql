@@ -42,7 +42,7 @@ create table voucher(
 	voucherID int identity(1,1) primary key,
 	foodID int not null foreign key references Food(foodID)	
 )
-
+go
 create table customer (
 	cusID INT IDENTITY(1,1) PRIMARY KEY,
 	address nvarchar(200),
@@ -55,7 +55,7 @@ create table customer (
 
 go
 create table Shipper (
-	ShipperID int not null primary key,
+	ShipperID int IDENTITY(1,1) not null primary key,
 	address nvarchar(200),
 	Username varchar(20),
 	phone varchar(10) check (phone like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
@@ -64,9 +64,9 @@ create table Shipper (
 	email varchar(30) check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
 	);
 create table Order1 (
-	OrderID int not null primary key,
+	OrderID int IDENTITY(1,1) not null primary key,
 	shopID int not null,
-	ShipperID int,
+	ShipperID int null,
 	cusID int not null,
 	foodID int not null,
 	address nvarchar(200),
@@ -78,6 +78,16 @@ create table Order1 (
 	foreign key (cusID) references Customer(cusID),
 	foreign key (foodID) references Food(foodID)
 	);
+
+	create table OrderDetail(
+	foodID int FOREIGN KEY references Food(foodID)
+)
+create table OrderShop(
+	OrderID
+)
+create table OrderDetail(
+	foodID int FOREIGN KEY references Food(foodID)
+)
 
 	
 

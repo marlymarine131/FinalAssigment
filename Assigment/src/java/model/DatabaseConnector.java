@@ -54,24 +54,23 @@ public class DatabaseConnector {
         return false;
     }
 
-    public boolean insertToCart(int foodID,int cusID) throws SQLException {
+    public boolean insertToCart(int foodID, int cusID) throws SQLException {
         String sql = "INSERT INTO OrderDetail (foodID, cusID) VALUES (?, ?)";
-        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD); 
-                PreparedStatement preparedStatement = connection.prepareStatement(sql)
-                ) {
+        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);  PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, foodID);
             preparedStatement.setInt(2, cusID);
             int rowsInserted = preparedStatement.executeUpdate();
             return rowsInserted > 0;
-        } 
+        }
     }
+
     public static Customer selectCustomer(int cusID) {
         String query = "SELECT * FROM customer WHERE cusID = ?";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try ( Connection connection = getConnection();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, cusID);
 
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            try ( ResultSet resultSet = preparedStatement.executeQuery()) {
                 Customer customer = new Customer();
                 customer.setCustomerID(resultSet.getInt("cusID"));
                 customer.setAddress(resultSet.getString("address"));
@@ -87,5 +86,19 @@ public class DatabaseConnector {
         }
         return null;
     }
-    
+
+    public boolean insertCustomer(String address, String phone, String password, String name, String email) throws SQLException {
+        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);  PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO customer (address, phone, password, name, email) VALUES (?, ?, ?, ?, ?)")) {
+
+            preparedStatement.setString(1, address);
+            preparedStatement.setString(2, phone);
+            preparedStatement.setString(3, password);
+            preparedStatement.setString(4, name);
+            preparedStatement.setString(5, email);
+
+            int effectRow = preparedStatement.executeUpdate();
+            return effectRow > 0;
+        }
+    }
 }

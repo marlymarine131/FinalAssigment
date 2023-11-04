@@ -38,7 +38,7 @@
                 <input type="text" name="addressHead" id="addressHead" class="signup-input" placeholder="Enter head address">
 
                 <label for="phone" class="signup-label">Phone</label>
-                <input type="text" name="phone" id="phone" class="signup-input" placeholder="Enter phone number">
+                <input type="text" name="phoneOwner" id="phone" class="signup-input" placeholder="Enter phone number">
 
                 <div class="image-container">
                     <label for="banner" class="signup-label">Banner</label>
@@ -57,7 +57,7 @@
                 <input type="text" name="address" id="address" class="signup-input" placeholder="Enter address">
 
                 <label for="phone" class="signup-label">Phone</label>
-                <input type="text" name="phone" id="phone" pattern="0[0-9]{9}" title="Enter a valid phone number" class="signup-input" placeholder="Enter phone">
+                <input type="text" name="phoneCustomer" id="phone" class="signup-input" placeholder="Enter phone number">
 
                 <label for="name" class="signup-label">Name</label>
                 <input type="text" name="name" id="name" class="signup-input" placeholder="Enter name">

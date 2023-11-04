@@ -102,6 +102,7 @@ public class addNew extends HttpServlet {
         String conPassword = request.getParameter("conPassword");
         String role = request.getParameter("role");
         OwnerDatabase ow = new OwnerDatabase();
+        DatabaseConnector dc = new DatabaseConnector();
         if ("Owner".equals(role)) {
 
             // Load JDBC driver
@@ -118,8 +119,8 @@ public class addNew extends HttpServlet {
 
             try {
                 if (ow.insertOwner(taxNumber, ownerName, areaServe, phone, description, email, addressHead, bannerInputStream, password)) {
-                    request.setAttribute("MSG", "chuc mung chu");
-                    request.getRequestDispatcher("fail.jsp").forward(request, response);
+
+                    response.sendRedirect("login");
                 } else {
                     request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
                     request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -133,10 +134,9 @@ public class addNew extends HttpServlet {
         } else if ("Customer".equals(role)) {
 
             String address = request.getParameter("address");
-            String phone = request.getParameter("phone");
+            String phone = request.getParameter("phoneCustomer");
 
             String name = request.getParameter("name");
-
             if (email == null || email.isEmpty() || password == null || password.isEmpty()
                     || conPassword == null || conPassword.isEmpty() || role == null || role.isEmpty()) {
                 response.sendRedirect("addNewAccout.jsp?error=Please fill in all fields");
@@ -151,36 +151,16 @@ public class addNew extends HttpServlet {
                 return;
             }
             try {
-                Connection connection = DatabaseConnector.getConnection();
-
-                String insertQuery = "INSERT INTO customer (address, phone, password, name, email) VALUES (?, ?, ?, ?, ?)";
-                try ( PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+                if(dc.insertCustomer(address, phone, password, name, email)){
+                    response.sendRedirect("login");
+                } else{
                     
-                    preparedStatement.setString(1, address); // Giá trị cho tham số 1
-                    preparedStatement.setString(2, phone); // Giá trị cho tham số 3
-                    preparedStatement.setString(3, password); // Giá trị cho tham số 4
-                    preparedStatement.setString(4, name); // Giá trị cho tham số 5
-                    preparedStatement.setString(5, email); // Giá trị cho tham số 
-                    int rowsAffected = preparedStatement.executeUpdate();
-                    if (rowsAffected > 0) {
-                        RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
-                        dispatcher.forward(request, response);
-                    } else {
-                        response.sendRedirect("addNewAccout.jsp?error=Failed to add new account");
-                    }
                 }
-                connection.setAutoCommit(false);
-
-            } catch (SQLException e) {
-
-                e.printStackTrace(); // In thông tin lỗi vào console
-                // Xử lý ngoại lệ SQL
-                if (e.getSQLState().equals("23505") || e.getMessage().contains("unique constraint")) {
-                    response.sendRedirect("addNewAccout.jsp?error=Email already registered");
-                } else {
-                    response.sendRedirect("addNewAccout.jsp?error=Database error" + e);
-                }
+            } catch (SQLException ex) {
+                request.setAttribute("MSG",ex);
+                request.getRequestDispatcher("fail.jsp").forward(request, response);
             }
+            
         } else if ("Shipper".equals(role)) {
 
         } else {

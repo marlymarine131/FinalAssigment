@@ -1,87 +1,7 @@
-<%-- 
-    Document   : shopping-cart
-    Created on : Oct 30, 2023, 8:47:45 PM
-    Author     : Hung Nguyen
---%>
-
-
-<!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@include file="includes/head.jsp" %>
 <%@include file="includes/Header.jsp" %>
-<!-- Header Section End -->
 
-<!-- Hero Section Begin -->
-<section class="hero hero-normal">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="hero__categories">
-                    <div class="hero__categories__all">
-                        <i class="fa fa-bars"></i>
-                        <span>All departments</span>
-                    </div>
-                    <ul>
-                        <li><a href="#">Fresh Meat</a></li>
-                        <li><a href="#">Vegetables</a></li>
-                        <li><a href="#">Fruit & Nut Gifts</a></li>
-                        <li><a href="#">Fresh Berries</a></li>
-                        <li><a href="#">Ocean Foods</a></li>
-                        <li><a href="#">Butter & Eggs</a></li>
-                        <li><a href="#">Fastfood</a></li>
-                        <li><a href="#">Fresh Onion</a></li>
-                        <li><a href="#">Papayaya & Crisps</a></li>
-                        <li><a href="#">Oatmeal</a></li>
-                        <li><a href="#">Fresh Bananas</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-9">
-                <div class="hero__search">
-                    <div class="hero__search__form">
-                        <form action="#">
-                            <div class="hero__search__categories">
-                                All Categories
-                                <span class="arrow_carrot-down"></span>
-                            </div>
-                            <input type="text" name="" value="}" placeholder="What do yo u need?">
-                            <button type="submit" class="site-btn">SEARCH</button>
-                        </form>
-                    </div>
-                    <div class="hero__search__phone">
-                        <div class="hero__search__phone__icon">
-                            <i class="fa fa-phone"></i>
-                        </div>
-                        <div class="hero__search__phone__text">
-                            <h5>+65 11.188.888</h5>
-                            <span>support 24/7 time</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Hero Section End -->
-
-<!-- Breadcrumb Section Begin -->
-<section class="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <div class="breadcrumb__text">
-                    <h2>Shopping Cart</h2>
-                    <div class="breadcrumb__option">
-                        <a href="./index.jsp">Home</a>
-                        <span>Shopping Cart</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Breadcrumb Section End -->
-
-<!-- Shoping Cart Section Begin -->
 <section class="shoping-cart spad">
     <div class="container">
         <div class="row">
@@ -93,29 +13,30 @@
                                 <th class="shoping__product">Products</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
-                                <th>Total</th>
-                                <th></th>
+                                <th>Subtotal</th>
+                                <th>image</th>
+                                <th>action</th>
+
+
                             </tr>
                         </thead>
                         <tbody>
-                            <c:forEach var="cartItem" items="${listFoods}">
+                            <c:forEach var="cartItem" items="${listFoods}" varStatus="status">
                                 <tr>
-                                    <td>${cartItem.foodID}</td>
-                                    <td>${cartItem.price} $</td>
                                     <td>${cartItem.foodName}</td>
-                                    <c:set var="base64Banner" value="${Base64.getEncoder().encodeToString(cartItem.imagine)}" />
+                                    <td data-price="${cartItem.price}">${cartItem.price} $</td>
                                     <td>
-                                        <img src="data:image/jpeg;base64,${base64Banner}" alt="" width="394" height="255"/>
+                                        <div class="quantity">
+                                            <input type="number" class="quantity-input" data-index="${status.index}" value="0" min="0" max="10" />
+                                        </div>
                                     </td>
-                                    
+                                    <td class="subtotal" data-subtotal="${status.index}">${cartItem.price} $</td>
                                     <td>
-                                        <a href="loadFood?foodID=${cartItem.foodID}" class="edit" data-toggle="modal">
-                                            <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
-                                        </a>
-                                        <a href="deleteFood?foodID=${cartItem.foodID}" class="delete" data-toggle="modal">
-                                            <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
-                                        </a>
+                                        <img src="data:image/jpeg;base64,${Base64.getEncoder().encodeToString(cartItem.imagine)}" alt="" width="394" height="255"/>
                                     </td>
+
+                                </tr>
+
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -127,8 +48,8 @@
             <div class="col-lg-12">
                 <div class="shoping__cart__btns">
                     <a href="#" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
-                    <a href="#" class="primary-btn cart-btn cart-btn-right"><span class="icon_loading"></span>
-                        Upadate Cart</a>
+                    <a href="#" class="primary-btn cart-btn cart-btn-right" onclick="updateCart()"><span class="icon_loading"></span>
+                        Update Cart</a>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -137,7 +58,7 @@
                         <h5>Discount Codes</h5>
                         <form action="#">
                             <input type="text" placeholder="Enter your coupon code">
-                            <button type="submit" class="site-btn">APPLY COUPON</button>
+                            <button type="button" class="site-btn" onclick="applyCoupon()">APPLY COUPON</button>
                         </form>
                     </div>
                 </div>
@@ -146,13 +67,60 @@
                 <div class="shoping__checkout">
                     <h5>Cart Total</h5>
                     <ul>
-                        <li>Subtotal <span>$454.98</span></li>
-                        <li>Total <span>$454.98</span></li>
+                        <
+                        <li>Total <span id="total">$0.00</span></li>
                     </ul>
-                    <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
+                    <a href="CheckOut" class="primary-btn">PROCEED TO CHECKOUT</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<script>
+    $(document).ready(function () {
+        // S? ki?n khi s? l??ng thay ??i
+        $('.quantity-input').on('input', function () {
+            updateSubtotal($(this));
+            updateCart(); // G?i hàm updateCart sau khi s? l??ng thay ??i
+        });
+
+        // S? ki?n khi ?n nút "Update Cart"
+        $('.cart-btn-right').on('click', function () {
+            updateCart();
+        });
+
+        // G?i hàm updateCart khi trang web ???c t?i
+        updateCart();
+    });
+
+    function updateSubtotal(input) {
+        var quantity = parseInt(input.val());
+        var price = parseFloat(input.closest('tr').find('td[data-price]').data('price'));
+        var subtotal = quantity * price;
+
+        input.closest('tr').find('.subtotal').text(subtotal.toFixed(2) + ' $');
+    }
+
+    function updateCart() {
+        var total = 0;
+
+        // Tính toán t?ng s? ti?n
+        $('.quantity-input').each(function () {
+            var quantity = parseInt($(this).val());
+            var price = parseFloat($(this).closest('tr').find('td[data-price]').data('price'));
+            var subtotal = quantity * price;
+
+            $(this).closest('tr').find('.subtotal').text(subtotal.toFixed(2) + ' $');
+            total += subtotal;
+        });
+
+        // C?p nh?t t?ng ti?n
+        $('#total').text(total.toFixed(2) + ' $');
+    }
+
+    function applyCoupon() {
+        // Add logic to apply coupon code if needed
+    }
+</script>
+
 <%@include file="includes/Footer.jsp" %>

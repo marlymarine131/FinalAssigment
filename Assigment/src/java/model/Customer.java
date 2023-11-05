@@ -85,5 +85,10 @@ public class Customer {
     public void setEmail(String Email) {
         this.Email = Email;
     }
+
+    @Override
+    public String toString() {
+        return "Customer{" + "CustomerID=" + CustomerID + ", address=" + address + ", UserName=" + UserName + ", Phone=" + Phone + ", PassWord=" + PassWord + ", Name=" + Name + ", Email=" + Email + '}';
+    }
     
 }

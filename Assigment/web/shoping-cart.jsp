@@ -4,93 +4,58 @@
 
 <section class="shoping-cart spad">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="shoping__cart__table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="shoping__product">Products</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Subtotal</th>
-                                <th>image</th>
-                                <th>action</th>
-
-
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <c:forEach var="cartItem" items="${listFoods}" varStatus="status">
+        <form action="addOrder" method="post">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__table">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td>${cartItem.foodName}</td>
-                                    <td data-price="${cartItem.price}">${cartItem.price} $</td>
-                                    <td>
-                                        <div class="quantity">
-                                            <input type="number" class="quantity-input" data-index="${status.index}" value="1" min="1" max="10" />
-                                        </div>
-                                    </td>
-                                    <td class="subtotal" data-subtotal="${status.index}">${cartItem.price} $</td>
-                                    <td>
-                                        <img src="data:image/jpeg;base64,${Base64.getEncoder().encodeToString(cartItem.imagine)}" alt="" width="394" height="255"/>
-                                    </td>
-
+                                    <th class="shoping__product">Products</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                    <th>image</th>
+                                    <th>action</th>
                                 </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="cartItem" items="${listFoods}" varStatus="status">
+                                    <tr>
+                                        <td>${cartItem.foodName}</td>
+                                        <td data-price="${cartItem.price}">${cartItem.price} $</td>
+                                        <td>
+                                            <div class="quantity">
+                                                <input type="number" name="quantity${status.index}"class="quantity-input" data-index="${status.index}" value="0" min="1" max="10" />
+                                            </div>
+                                        </td>
+                                        <td class="subtotal" data-subtotal="${status.index}">${cartItem.price} $</td>
+                                        <td>
+                                            <img src="data:image/jpeg;base64,${Base64.getEncoder().encodeToString(cartItem.imagine)}" alt="" width="394" height="255"/>
+                                        </td>
 
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="shoping__cart__btns">
-                    <a href="#" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
-                    <a href="#" class="primary-btn cart-btn cart-btn-right" onclick="updateCart()"><span class="icon_loading"></span>
-                        Update Cart</a>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="shoping__continue">
-                    <div class="shoping__discount">
-                        <h5>Discount Codes</h5>
-                        <form action="#">
-                            <input type="text" placeholder="Enter your coupon code">
-                            <button type="button" class="site-btn" onclick="applyCoupon()">APPLY COUPON</button>
-                        </form>
+                                    </tr>
+
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="shoping__checkout">
-                    <h5>Cart Total</h5>
-
-
-
-                    <form id="cartForm" method="post" action="YourServletURL">
-                        <c:forEach var="cartItem" items="${listFoods}" varStatus="status">
-                            <div class="cart-item" data-index="${status.index}" data-foodname="${cartItem.foodName}" data-price="${cartItem.price}" data-imagine="${Base64.getEncoder().encodeToString(cartItem.imagine)}">
-                                <input type="hidden" name="index" value="${status.index}">
-                                <input type="hidden" name="foodName" value="${cartItem.foodName}">
-                                <input type="hidden" name="price" value="${cartItem.price}">
-                                <input type="hidden" name="imagine" value="${Base64.getEncoder().encodeToString(cartItem.imagine)}">
-                                <!-- Các input hidden khác n?u c?n -->
-                                <!-- Các th? HTML khác nh? tr??c -->
-                            </div>
-
-
-                        </c:forEach>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="shoping__checkout">
+                        <h5>Cart Total</h5>               
                         <ul>
                             <li>Total <span id="total">$0.00</span></li>
                         </ul>
                         <button type="submit" class="primary-btn">PROCEED TO CHECKOUT</button>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
+
     </div>
 </section>
 <script>

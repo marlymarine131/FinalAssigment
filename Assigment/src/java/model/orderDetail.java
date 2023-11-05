@@ -17,6 +17,10 @@ public class orderDetail {
     private int shopID;
     private double subTotal;
 
+    public orderDetail() {
+    }
+
+    
     public orderDetail(int orderDetailID, int quantity, int cusID, Integer orderID, int foodID, int shopID, double subTotal) {
         this.orderDetailID = orderDetailID;
         this.quantity = quantity;
@@ -82,4 +86,10 @@ public class orderDetail {
     public void setSubTotal(double subTotal) {
         this.subTotal = subTotal;
     }   
+
+    @Override
+    public String toString() {
+        return "orderDetail{" + "orderDetailID=" + orderDetailID + ", quantity=" + quantity + ", cusID=" + cusID + ", orderID=" + orderID + ", foodID=" + foodID + ", shopID=" + shopID + ", subTotal=" + subTotal + '}';
+    }
+    
 }

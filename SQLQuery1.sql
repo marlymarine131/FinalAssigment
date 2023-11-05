@@ -33,7 +33,6 @@ create table Food(
 	price decimal(18,2),
 	imagine varbinary(max) null,
 )
-
 go
 create table voucher(
 	dateAplied Date,
@@ -63,14 +62,12 @@ create table Shipper (
 	email varchar(30) check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
 	);
 	go
-CREATE TABLE Order1 (
+CREATE TABLE OrderTotal (
     OrderID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    ShipperID INT NULL,
     cusID INT NOT NULL,
     address NVARCHAR(200),
     total_price DECIMAL(18,2) DEFAULT 0,
-    status NVARCHAR(50) DEFAULT 'Not Delivery',
-    FOREIGN KEY (ShipperID) REFERENCES Shipper(ShipperID),
+    status NVARCHAR(50) DEFAULT 'Not Delivery',    
     FOREIGN KEY (cusID) REFERENCES Customer(cusID)
 );
 go
@@ -78,12 +75,24 @@ go
     quantity INT DEFAULT 0,
     orderDetailID INT IDENTITY(1,1) PRIMARY KEY,
     cusID INT FOREIGN KEY REFERENCES Customer(cusID),
-    OrderID INT DEFAULT NULL,
+    OrderID INT DEFAULT NULL FOREIGN KEY REFERENCES OrderTotal(OrderID),
     foodID INT FOREIGN KEY REFERENCES Food(foodID),
     shopID INT FOREIGN KEY REFERENCES Shop(shopID),
-    subTotal DECIMAL(18,2),
-    
+    subTotal DECIMAL(18,2),  
 );
+CREATE TABLE OderShop(
+	orderShopID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	shopID INT FOREIGN KEY REFERENCES Shop(shopID),
+	foodName nvarchar(50),
+	ShipperID INT NULL,
+	cusID INT NOT NULL,
+	quantity INT,
+	address NVARCHAR(200),
+	shopOrderPrice DECIMAL(18,2),
+	orderDetailID INT FOREIGN KEY REFERENCES OrderDetail(orderDetailID),
+	FOREIGN KEY (ShipperID) REFERENCES Shipper(ShipperID),
+
+)
 create table shopShipper(
 	shopID int not null foreign key references Shop(shopID),
 	ShipperID int foreign key (ShipperID) references Shipper(ShipperID),
@@ -95,7 +104,6 @@ AFTER INSERT , UPDATE
 AS
 BEGIN
     SET NOCOUNT ON;
-
     UPDATE od
     SET od.subTotal = f.price * i.quantity
     FROM OrderDetail od
@@ -116,7 +124,7 @@ BEGIN
         FROM OrderDetail od
         WHERE od.OrderID = o.OrderID
     )
-    FROM Order1 o
+    FROM OrderTotal o
     INNER JOIN inserted i ON o.OrderID = i.OrderID;
 END;
 

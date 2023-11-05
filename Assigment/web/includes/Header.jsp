@@ -300,7 +300,7 @@
                         <li><a href="browsing">Shop</a></li>
                         <li><a href="#">Pages</a>
                             <ul class="header__menu__dropdown">
-                                <li><a href="./shop-details.jsp">Shop Details</a></li>
+                                <li><a href="listAllShop">Manage Shop</a></li>
                                 <li><a href="cartBrowsing">Shoping Cart</a></li>
                                 <li><a href="./checkout.jsp">Check Out</a></li>
                                 <li><a href="./blog-details.jsp">Blog Details</a></li>

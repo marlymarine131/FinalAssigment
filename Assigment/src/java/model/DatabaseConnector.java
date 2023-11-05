@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,35 +106,134 @@ public class DatabaseConnector {
         }
     }
 
-    public Order getOrderByID() {
+    public Order getOrderByID(int OrderID) {
+        String query = "SELECT * FROM order1 WHERE OrderID = ?";
+        try ( Connection connection = getConnection();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, OrderID);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
+            while (resultSet.next()) {
+                Order order = new Order();
+                order.setOrderID(resultSet.getInt("OrderID"));
+                order.setCusID(resultSet.getInt("CusID"));
+                order.setShipperID(resultSet.getInt("ShipperID"));
+                order.setAddress(resultSet.getString("address "));
+                order.setStatus(resultSet.getString("status"));
+                order.setTotal_price(resultSet.getDouble("total_price"));
+                return order;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public void insertOrder(int cusID) throws SQLException {
+    public Order insertOrder(int cusID) throws SQLException {
+        Order order = null;
+
         try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);  PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO Order1 (cusID,address)\n"
-                + "VALUES\n"
-                + "(?,select b.address\n"
-                + "from customer b \n"
-                + "where b.cusID = ?")) {
+                "INSERT INTO Order1 (cusID, address) VALUES (?, (SELECT b.address FROM customer b WHERE b.cusID = ?))",
+                Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setInt(1, cusID);
             preparedStatement.setInt(2, cusID);
             preparedStatement.executeUpdate();
+
+            try ( ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int orderId = generatedKeys.getInt(1);
+
+                    // Now you can create and return the Order object with the generated OrderID
+                    order = new Order();
+                    order.setOrderID(orderId);
+                    order.setCusID(cusID);
+                    // Set other properties of the Order if needed
+                    try ( PreparedStatement selectStatement = connection.prepareStatement(
+                            "SELECT ShipperID, address, total_price, status FROM Order1 WHERE OrderID = ?")) {
+
+                        selectStatement.setInt(1, orderId);
+                        try ( ResultSet resultSet = selectStatement.executeQuery()) {
+                            if (resultSet.next()) {
+                                order.setShipperID(resultSet.getInt("ShipperID"));
+                                order.setAddress(resultSet.getString("address"));
+                                order.setTotal_price(resultSet.getDouble("total_price"));
+                                order.setStatus(resultSet.getString("status"));
+                                // Set other properties based on your Order class
+                            } else {
+                                // Handle the case where no data was retrieved
+                                throw new SQLException("Failed to retrieve Order details.");
+                            }
+                        }
+                    }
+                } else {
+                    // Handle the case where no keys were generated
+                    throw new SQLException("Failed to get the generated OrderID.");
+                }
+            }
         }
+
+        return order;
     }
 
-    public void updateOrder(int quantity, int orderID, int orderDetailID) throws SQLException {
-        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);  
-                PreparedStatement preparedStatement = connection.prepareStatement(
-                "UPDATE OrderDetail\n"
-                + "SET quantity = ?, OrderID = ?\n"
-                + "WHERE orderDetailID = ?;")) {
+    public boolean updateOrder(int quantity, int orderID, int orderDetailID) throws SQLException {
+        
+        String query = "UPDATE OrderDetail SET quantity = ?, OrderID = ? WHERE orderDetailID = ?";
+
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, quantity);
             preparedStatement.setInt(2, orderID);
             preparedStatement.setInt(3, orderDetailID);
-            preparedStatement.executeUpdate();
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
         }
+    }
+
+    public List<orderDetail> getShopID(int shopID) throws SQLException {
+        List<orderDetail> sID = new ArrayList<>();
+        String query = "SELECT * FROM OrderDetail WHERE shopID = ?";
+
+        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, shopID);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                orderDetail orderDetails = new orderDetail();
+                orderDetails.setCusID(resultSet.getInt("cusID"));
+                orderDetails.setFoodID(resultSet.getInt("foodID"));
+                orderDetails.setShopID(resultSet.getInt("shopID"));
+                orderDetails.setQuantity(resultSet.getInt("quantity"));
+                orderDetails.setSubTotal(resultSet.getDouble("subTotal"));
+
+                // Assuming you have a method to set other properties of OrderDetail
+                // orderDetail.setXXX(resultSet.getXXX("columnName"));
+                sID.add(orderDetails);
+            }
+        }
+        return sID;
+    }
+
+    public List<orderDetail> getCusID(int cusID) {
+        List<orderDetail> cID = new ArrayList<>();
+        String query = "SELECT * FROM OrderDetail WHERE cusID = ?";
+
+        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, cusID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                orderDetail orderDetails = new orderDetail();
+                orderDetails.setOrderDetailID(resultSet.getInt("orderDetailID"));
+                orderDetails.setQuantity(resultSet.getInt("quantity"));
+                orderDetails.setCusID(resultSet.getInt("cusID"));
+                orderDetails.setFoodID(resultSet.getInt("foodID"));
+                orderDetails.setShopID(resultSet.getInt("shopID"));
+                orderDetails.setSubTotal(resultSet.getDouble("subTotal"));
+                cID.add(orderDetails);
+            }
+        } catch (Exception e) {
+        }
+        return cID;
     }
 
 }

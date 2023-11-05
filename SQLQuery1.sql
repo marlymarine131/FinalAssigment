@@ -52,8 +52,7 @@ create table customer (
 	name nvarchar(50),
 	email varchar(30) unique check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
 	);
-
-go
+	go
 create table Shipper (
 	ShipperID int IDENTITY(1,1) not null primary key,
 	address nvarchar(200),
@@ -63,31 +62,64 @@ create table Shipper (
 	name nvarchar(50),
 	email varchar(30) check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
 	);
-create table Order1 (
-	OrderID int IDENTITY(1,1) not null primary key,
-	shopID int not null,
-	ShipperID int null,
-	cusID int not null,
-	foodID int not null,
-	cartID int not null,
-	address nvarchar(200),
-	quantity int,
-	total_price decimal(18,2),
-	status nvarchar(50),
-	foreign key (ShipperID) references Shipper(ShipperID),
-	foreign key (cusID) references Customer(cusID),
-	foreign key (cartID) references OrderDetail(cartID),
-	);
-create table OrderDetail(
-	cartID int IDENTITY(1,1) primary key,
-	foodID int FOREIGN KEY references Food(foodID),
-	cusID int FOREIGN KEY references customer(cusID),
+	go
+CREATE TABLE Order1 (
+    OrderID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    ShipperID INT NULL,
+    cusID INT NOT NULL,
+    address NVARCHAR(200),
+    total_price DECIMAL(18,2) DEFAULT 0,
+    status NVARCHAR(50) DEFAULT 'Not Delivery',
+    FOREIGN KEY (ShipperID) REFERENCES Shipper(ShipperID),
+    FOREIGN KEY (cusID) REFERENCES Customer(cusID)
+);
+go
+	CREATE TABLE OrderDetail (
+    quantity INT DEFAULT 0,
+    orderDetailID INT IDENTITY(1,1) PRIMARY KEY,
+    cusID INT FOREIGN KEY REFERENCES Customer(cusID),
+    OrderID INT DEFAULT NULL,
+    foodID INT FOREIGN KEY REFERENCES Food(foodID),
+    shopID INT FOREIGN KEY REFERENCES Shop(shopID),
+    subTotal DECIMAL(18,2),
+    
+);
+create table shopShipper(
+	shopID int not null foreign key references Shop(shopID),
+	ShipperID int foreign key (ShipperID) references Shipper(ShipperID),
 )
-create table OrderShop(
-	shopID int ,
-	foodID int ,
-	OrderID int ,
-)
+go
+CREATE TRIGGER tr_OrderDetail_Insert
+ON OrderDetail
+AFTER INSERT , UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE od
+    SET od.subTotal = f.price * i.quantity
+    FROM OrderDetail od
+    INNER JOIN Food f ON od.foodID = f.foodID
+    INNER JOIN inserted i ON od.orderDetailID = i.orderDetailID;
+END;
+go
+CREATE TRIGGER tr_OrderDetail_AfterInsert
+ON OrderDetail
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE o
+    SET o.total_price = (
+        SELECT SUM(od.subTotal)
+        FROM OrderDetail od
+        WHERE od.OrderID = o.OrderID
+    )
+    FROM Order1 o
+    INNER JOIN inserted i ON o.OrderID = i.OrderID;
+END;
+
 
 
 	

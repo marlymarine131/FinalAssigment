@@ -6,6 +6,7 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +16,7 @@ import model.Food;
 import model.OwnerDatabase;
 
 import model.*;
+
 /**
  *
  * @author oteee
@@ -38,7 +40,7 @@ public class cartServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet cartServlet</title>");            
+            out.println("<title>Servlet cartServlet</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet cartServlet at " + request.getContextPath() + "</h1>");
@@ -59,14 +61,19 @@ public class cartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         OwnerDatabase foodDAO = new OwnerDatabase();
-         Customer cu =(Customer) request.getSession().getAttribute("accout");
-         
-        List<Food> food1 = foodDAO.listCartFood(cu.getCustomerID());
-        
+        OwnerDatabase foodDAO = new OwnerDatabase();
+        Customer cu = (Customer) request.getSession().getAttribute("accout");
+        try {
+            List<Food> food1 = foodDAO.listCartFood(cu.getCustomerID());
+            request.setAttribute("listFoods", food1);
+            request.getRequestDispatcher("shoping-cart.jsp").forward(request, response);
+        } catch (NullPointerException e) {
+            List<Food> food1 = new ArrayList<>();
+            request.setAttribute("listFoods", food1);
+            request.getRequestDispatcher("shoping-cart.jsp").forward(request, response);
+        }
+
         // Set the list of foods in the request attribute
-        request.setAttribute("listFoods", food1);
-        request.getRequestDispatcher("shoping-cart.jsp").forward(request, response);
     }
 
     /**

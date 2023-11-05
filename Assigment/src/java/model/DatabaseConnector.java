@@ -55,10 +55,13 @@ public class DatabaseConnector {
     }
 
     public boolean insertToCart(int foodID, int cusID) throws SQLException {
-        String sql = "INSERT INTO OrderDetail (foodID, cusID) VALUES (?, ?)";
+        String sql = "INSERT INTO OrderDetail (cusID, foodID, shopID)\n"
+                + "VALUES\n"
+                + "(?, ?, (SELECT shopID FROM Food WHERE foodID =? ));";
         try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);  PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, foodID);
-            preparedStatement.setInt(2, cusID);
+            preparedStatement.setInt(1, cusID);
+            preparedStatement.setInt(2, foodID);
+            preparedStatement.setInt(3, foodID);
             int rowsInserted = preparedStatement.executeUpdate();
             return rowsInserted > 0;
         }
@@ -101,4 +104,36 @@ public class DatabaseConnector {
             return effectRow > 0;
         }
     }
+
+    public Order getOrderByID() {
+
+    }
+
+    public void insertOrder(int cusID) throws SQLException {
+        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);  PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO Order1 (cusID,address)\n"
+                + "VALUES\n"
+                + "(?,select b.address\n"
+                + "from customer b \n"
+                + "where b.cusID = ?")) {
+
+            preparedStatement.setInt(1, cusID);
+            preparedStatement.setInt(2, cusID);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public void updateOrder(int quantity, int orderID, int orderDetailID) throws SQLException {
+        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);  
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                "UPDATE OrderDetail\n"
+                + "SET quantity = ?, OrderID = ?\n"
+                + "WHERE orderDetailID = ?;")) {
+            preparedStatement.setInt(1, quantity);
+            preparedStatement.setInt(2, orderID);
+            preparedStatement.setInt(3, orderDetailID);
+            preparedStatement.executeUpdate();
+        }
+    }
+
 }

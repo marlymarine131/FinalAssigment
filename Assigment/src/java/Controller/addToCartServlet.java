@@ -65,7 +65,7 @@ public class addToCartServlet extends HttpServlet {
         Customer cu = (Customer) request.getSession().getAttribute("accout");
         DatabaseConnector dc = new DatabaseConnector();
         try {
-            if (dc.insertToCart(foodID,cu.getCustomerID())) {
+            if (dc.insertToCart(foodID, cu.getCustomerID())) {
                 response.sendRedirect("browsing");
             } else {
                 request.setAttribute("MSG", "can not");
@@ -73,6 +73,8 @@ public class addToCartServlet extends HttpServlet {
             }
         } catch (SQLException ex) {
             Logger.getLogger(addToCartServlet.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("MSG", ex);
+            request.getRequestDispatcher("fail.jsp").forward(request, response);
         }
 
     }

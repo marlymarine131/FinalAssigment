@@ -21,13 +21,14 @@
                             </tr>
                         </thead>
                         <tbody>
+
                             <c:forEach var="cartItem" items="${listFoods}" varStatus="status">
                                 <tr>
                                     <td>${cartItem.foodName}</td>
                                     <td data-price="${cartItem.price}">${cartItem.price} $</td>
                                     <td>
                                         <div class="quantity">
-                                            <input type="number" class="quantity-input" data-index="${status.index}" value="0" min="0" max="10" />
+                                            <input type="number" class="quantity-input" data-index="${status.index}" value="1" min="1" max="10" />
                                         </div>
                                     </td>
                                     <td class="subtotal" data-subtotal="${status.index}">${cartItem.price} $</td>
@@ -66,11 +67,27 @@
             <div class="col-lg-6">
                 <div class="shoping__checkout">
                     <h5>Cart Total</h5>
-                    <ul>
-                        <
-                        <li>Total <span id="total">$0.00</span></li>
-                    </ul>
-                    <a href="CheckOut" class="primary-btn">PROCEED TO CHECKOUT</a>
+
+
+
+                    <form id="cartForm" method="post" action="YourServletURL">
+                        <c:forEach var="cartItem" items="${listFoods}" varStatus="status">
+                            <div class="cart-item" data-index="${status.index}" data-foodname="${cartItem.foodName}" data-price="${cartItem.price}" data-imagine="${Base64.getEncoder().encodeToString(cartItem.imagine)}">
+                                <input type="hidden" name="index" value="${status.index}">
+                                <input type="hidden" name="foodName" value="${cartItem.foodName}">
+                                <input type="hidden" name="price" value="${cartItem.price}">
+                                <input type="hidden" name="imagine" value="${Base64.getEncoder().encodeToString(cartItem.imagine)}">
+                                <!-- Các input hidden khác n?u c?n -->
+                                <!-- Các th? HTML khác nh? tr??c -->
+                            </div>
+
+
+                        </c:forEach>
+                        <ul>
+                            <li>Total <span id="total">$0.00</span></li>
+                        </ul>
+                        <button type="submit" class="primary-btn">PROCEED TO CHECKOUT</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -110,7 +127,7 @@
             var price = parseFloat($(this).closest('tr').find('td[data-price]').data('price'));
             var subtotal = quantity * price;
 
-            $(this).closest('tr').find('.subtotal').text(subtotal.toFixed(2) + ' $');
+            $(this).closest('tr').find('.subtotal-value').text(subtotal.toFixed(2));
             total += subtotal;
         });
 

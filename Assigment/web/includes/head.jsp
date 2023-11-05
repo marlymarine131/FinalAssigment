@@ -54,49 +54,7 @@
 
         <link href="css1/manager.css" rel="stylesheet" type="text/css"/>
         <link href="css1/style_1.css" rel="stylesheet" type="text/css"/>
-        <script>
-            $(document).ready(function () {
-                // Sự kiện khi số lượng thay đổi
-                $('.quantity-input').on('input', function () {
-                    updateSubtotal($(this));
-                });
-
-                // Sự kiện khi ấn nút "Update Cart"
-                $('.cart-btn-right').on('click', function () {
-                    updateCart();
-                });
-            });
-
-            function updateSubtotal(input) {
-                var quantity = parseInt(input.val());
-                var price = parseFloat(input.closest('tr').find('td[data-price]').data('price'));
-                var subtotal = quantity * price;
-
-                input.closest('tr').find('.subtotal').text(subtotal.toFixed(2) + ' $');
-            }
-
-            function updateCart() {
-                var total = 0;
-
-                // Tính toán tổng số tiền
-                $('.quantity-input').each(function () {
-                    var quantity = parseInt($(this).val());
-                    var price = parseFloat($(this).closest('tr').find('td[data-price]').data('price'));
-                    var subtotal = quantity * price;
-
-                    $(this).closest('tr').find('.subtotal').text(subtotal.toFixed(2) + ' $');
-                    total += subtotal;
-                });
-
-                // Cập nhật tổng tiền
-                $('#subtotal span').text(total.toFixed(2) + ' $');
-                $('#total').text(total.toFixed(2) + ' $');
-            }
-
-            function applyCoupon() {
-                // Add logic to apply coupon code if needed
-            }
-        </script>
+        
 
         <style>
             img {

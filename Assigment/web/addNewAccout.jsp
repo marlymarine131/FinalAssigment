@@ -62,11 +62,23 @@
                 <label for="name" class="signup-label">Name</label>
                 <input type="text" name="name" id="name" class="signup-input" placeholder="Enter name">
 
-                
+
             </div>
             <div id="shipperFields" style="display: none;">
-                <label for="shipperField1" class="signup-label">Shipper Field 1</label>
-                <input type="text" name="shipperField1" id="shipperField1" class="signup-input" placeholder="Enter shipper field 1">
+                <label for="address" class="signup-label">Address</label>
+                <input type="text" name="addressShipper" id="address" class="signup-input" placeholder="Enter address">
+
+                <label for="phone" class="signup-label">Phone</label>
+                <input type="text" name="phoneShipper" id="phone" class="signup-input" placeholder="Enter phone number">
+
+                <label for="name" class="signup-label">Name</label>
+                <input type="text" name="nameShipper" id="name" class="signup-input" placeholder="Enter name">
+                <select name="shopID" class="signup-input" >
+                    <c:forEach items="${shopList1}" var="sl">
+                        <option value="${sl.shopID}">${sl.shopName}</option>
+                    </c:forEach>
+                </select>
+
             </div>
 
             <button type="submit" class="signup-btn">Sign Up</button>

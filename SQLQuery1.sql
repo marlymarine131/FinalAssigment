@@ -24,7 +24,6 @@ create table Shop(
 	shopAddress nvarchar(max),
 	banner varbinary(max) null,
 )
-
 go
 create table Food(
 	foodID int identity(1,1) not null primary key,
@@ -32,14 +31,6 @@ create table Food(
 	foodName nvarchar(50),
 	price decimal(18,2),
 	imagine varbinary(max) null,
-)
-go
-create table voucher(
-	dateAplied Date,
-	queriDate Date,
-	price float,
-	voucherID int identity(1,1) primary key,
-	foodID int not null foreign key references Food(foodID)	
 )
 go
 create table customer (
@@ -55,11 +46,11 @@ create table customer (
 create table Shipper (
 	ShipperID int IDENTITY(1,1) not null primary key,
 	address nvarchar(200),
-	Username varchar(20),
 	phone varchar(10) check (phone like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
 	password varchar(20) not null,
 	name nvarchar(50),
-	email varchar(30) check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
+	email varchar(30) check (email LIKE '[a-z]%@[a-z]%.[a-z]%'),
+	shopID int FOREIGN KEY REFERENCES Shop(shopID)
 	);
 	go
 CREATE TABLE OrderTotal (
@@ -71,33 +62,25 @@ CREATE TABLE OrderTotal (
     FOREIGN KEY (cusID) REFERENCES Customer(cusID)
 );
 go
-	CREATE TABLE OrderDetail (
+CREATE TABLE OrderDetail (
     quantity INT DEFAULT 0,
     orderDetailID INT IDENTITY(1,1) PRIMARY KEY,
     cusID INT FOREIGN KEY REFERENCES Customer(cusID),
+	orderShopID INT NULL FOREIGN KEY REFERENCES OderShop(orderShopID),
     OrderID INT DEFAULT NULL FOREIGN KEY REFERENCES OrderTotal(OrderID),
     foodID INT FOREIGN KEY REFERENCES Food(foodID),
     shopID INT FOREIGN KEY REFERENCES Shop(shopID),
-    subTotal DECIMAL(18,2),  
+    subTotal DECIMAL(18,2),
 );
-CREATE TABLE OderShop(
+CREATE TABLE OrderShop(
 	orderShopID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	shopID INT FOREIGN KEY REFERENCES Shop(shopID),
-	foodName nvarchar(50),
-	ShipperID INT NULL,
-	cusID INT NOT NULL,
-	quantity INT,
-	address NVARCHAR(200),
+	shopID INT FOREIGN KEY REFERENCES Shop(shopID),	
+	status NVARCHAR(50) DEFAULT 'Not Delivery',
 	shopOrderPrice DECIMAL(18,2),
-	orderDetailID INT FOREIGN KEY REFERENCES OrderDetail(orderDetailID),
-	FOREIGN KEY (ShipperID) REFERENCES Shipper(ShipperID),
-
+	address NVARCHAR(200),
+	phone varchar(10),
+	ShipperID INT null  FOREIGN KEY REFERENCES Shipper(ShipperID),
 )
-create table shopShipper(
-	shopID int not null foreign key references Shop(shopID),
-	ShipperID int foreign key (ShipperID) references Shipper(ShipperID),
-)
-go
 CREATE TRIGGER tr_OrderDetail_Insert
 ON OrderDetail
 AFTER INSERT , UPDATE
@@ -127,6 +110,30 @@ BEGIN
     FROM OrderTotal o
     INNER JOIN inserted i ON o.OrderID = i.OrderID;
 END;
+go
+CREATE TRIGGER trg_UpdateShopOrderPrice
+ON OrderDetail
+AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+    IF (UPDATE(orderShopID) OR INSERT OR DELETE)
+    BEGIN
+        UPDATE OrderShop
+        SET shopOrderPrice = (
+            SELECT ISNULL(SUM(subTotal), 0)
+            FROM OrderDetail
+            WHERE OrderDetail.orderShopID = OrderShop.orderShopID
+        )
+        FROM OrderShop
+        WHERE OrderShop.orderShopID IN (SELECT DISTINCT orderShopID FROM INSERTED)
+            OR OrderShop.orderShopID IN (SELECT DISTINCT orderShopID FROM DELETED)
+    END
+END;
+
+
+
+
+
 
 
 

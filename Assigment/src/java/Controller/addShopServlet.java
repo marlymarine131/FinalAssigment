@@ -85,7 +85,7 @@ public class addShopServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Owner ow = (Owner) request.getSession().getAttribute("owner");
+        Owner ow = (Owner) request.getSession().getAttribute("accout");
         OwnerDatabase ownerDAO = new OwnerDatabase();
         int ownerID = ow.getOwnerID();
         String shopName = request.getParameter("Name");

@@ -78,21 +78,26 @@ public class addOrder extends HttpServlet {
         DatabaseConnector dc = new DatabaseConnector();
         Customer cu = (Customer) request.getSession().getAttribute("accout");
         List<orderDetail> cartList = dc.getCusID(cu.getCustomerID());
+        List<Integer> noShop = foodDAO.getShopIDs();
         try {
             Order or = dc.insertOrder(cu.getCustomerID());
-            for (orderDetail detail : cartList) {
-                String quantityParam = "quantity" + cartList.indexOf(detail);
-                int quantity = Integer.parseInt(request.getParameter(quantityParam));
-//                request.setAttribute("MSG", detail.toString());
-//                    request.getRequestDispatcher("fail.jsp").forward(request, response);
-                if (dc.updateOrder(quantity, or.getOrderID(), detail.getOrderDetailID())) {
-                    response.sendRedirect("");
-                } else {
-                    request.setAttribute("MSG", "can not update");
-                    request.getRequestDispatcher("fail.jsp").forward(request, response);
-                }
 
+            List<orderShop> orderShopList = foodDAO.processOrderDetails(noShop);
+
+            for (orderShop shop : orderShopList) {
+                for (orderDetail detail : cartList) {
+                    String quantityParam = "quantity" + cartList.indexOf(detail);
+                    int quantity = Integer.parseInt(request.getParameter(quantityParam));               
+                    if (dc.updateOrder(quantity, or.getOrderID(), detail.getOrderDetailID(), shop.getOrderShopID())) {
+                        response.sendRedirect("browsing");
+                    } else {
+                        request.setAttribute("MSG", "can not update");
+                        request.getRequestDispatcher("fail.jsp").forward(request, response);
+                    }
+
+                }
             }
+
         } catch (SQLException ex) {
             request.setAttribute("MSG", ex);
             request.getRequestDispatcher("fail.jsp").forward(request, response);

@@ -59,9 +59,10 @@ public class listAllShop extends HttpServlet {
             throws ServletException, IOException {
 //        request.getRequestDispatcher("ManageShop.jsp").forward(request, response);
         OwnerDatabase ownerDatabase = new OwnerDatabase();
-//        Owner ow = (Owner) request.getSession().getAttribute("owner");
-
-        List<Shop> shopList = ownerDatabase.getAllShop();
+        Owner ow = (Owner) request.getSession().getAttribute("accout");
+        request.setAttribute("MSG", ow.getOwnerID());
+        request.getRequestDispatcher("fail.jsp").forward(request, response);
+        List<Shop> shopList = ownerDatabase.getShopByOwnerID(ow.getOwnerID());
         request.setAttribute("shopList", shopList);
         request.getRequestDispatcher("ManageShop.jsp").forward(request, response);
     }

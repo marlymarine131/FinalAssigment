@@ -107,7 +107,7 @@ public class DatabaseConnector {
     }
 
     public Order getOrderByID(int OrderID) {
-        String query = "SELECT * FROM order1 WHERE OrderID = ?";
+        String query = "SELECT * FROM OrderTotal WHERE OrderID = ?";
         try ( Connection connection = getConnection();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, OrderID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -116,10 +116,10 @@ public class DatabaseConnector {
                 Order order = new Order();
                 order.setOrderID(resultSet.getInt("OrderID"));
                 order.setCusID(resultSet.getInt("CusID"));
-                order.setShipperID(resultSet.getInt("ShipperID"));
+               
                 order.setAddress(resultSet.getString("address "));
                 order.setStatus(resultSet.getString("status"));
-                order.setTotal_price(resultSet.getDouble("total_price"));
+                order.setTotalPrice(resultSet.getDouble("total_price"));
                 return order;
             }
         } catch (SQLException e) {
@@ -131,8 +131,9 @@ public class DatabaseConnector {
     public Order insertOrder(int cusID) throws SQLException {
         Order order = null;
 
-        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);  PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO Order1 (cusID, address) VALUES (?, (SELECT b.address FROM customer b WHERE b.cusID = ?))",
+        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD); 
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO OrderTotal (cusID, address) VALUES (?, (SELECT b.address FROM customer b WHERE b.cusID = ?))",
                 Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setInt(1, cusID);
@@ -149,14 +150,14 @@ public class DatabaseConnector {
                     order.setCusID(cusID);
                     // Set other properties of the Order if needed
                     try ( PreparedStatement selectStatement = connection.prepareStatement(
-                            "SELECT ShipperID, address, total_price, status FROM Order1 WHERE OrderID = ?")) {
+                            "SELECT  address, total_price, status FROM OrderTotal WHERE OrderID = ?")) {
 
                         selectStatement.setInt(1, orderId);
                         try ( ResultSet resultSet = selectStatement.executeQuery()) {
                             if (resultSet.next()) {
-                                order.setShipperID(resultSet.getInt("ShipperID"));
+       
                                 order.setAddress(resultSet.getString("address"));
-                                order.setTotal_price(resultSet.getDouble("total_price"));
+                                order.setTotalPrice(resultSet.getDouble("total_price"));
                                 order.setStatus(resultSet.getString("status"));
                                 // Set other properties based on your Order class
                             } else {
@@ -175,15 +176,16 @@ public class DatabaseConnector {
         return order;
     }
 
-    public boolean updateOrder(int quantity, int orderID, int orderDetailID) throws SQLException {
-        
-        String query = "UPDATE OrderDetail SET quantity = ?, OrderID = ? WHERE orderDetailID = ?";
+    public boolean updateOrder(int quantity, int orderID, int orderDetailID, int orderShopID) throws SQLException {
 
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        String query = "UPDATE OrderDetail SET quantity = ?, OrderID = ?,orderShopID =? WHERE orderDetailID = ?";
+
+        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD); 
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, quantity);
             preparedStatement.setInt(2, orderID);
             preparedStatement.setInt(3, orderDetailID);
+            preparedStatement.setInt(4, orderShopID);
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         }

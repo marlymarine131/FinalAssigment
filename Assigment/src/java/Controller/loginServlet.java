@@ -126,11 +126,43 @@ public class loginServlet extends HttpServlet {
                             customer.setPassWord(resultSet.getString("password"));
                             customer.setName(resultSet.getString("name"));
                             customer.setEmail(resultSet.getString("email"));
-
                             HttpSession session = request.getSession();
-                            session.setAttribute("accout",customer);
+                            session.setAttribute("accout", customer);
                             request.getRequestDispatcher("shop-grid.jsp").forward(request, response);
+                        } else {
+                            request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
+                            request.getRequestDispatcher("login.jsp").forward(request, response);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect("login.jsp?error=Database error" + e);
+            }
+        } else if ("Shipper".equals(role)) {
 
+            if (email == null || email.isEmpty() || password == null || password.isEmpty() || role == null || role.isEmpty()) {
+                request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            }
+            try ( Connection connection = DatabaseConnector.getConnection()) {
+                String insertQuery = "SELECT * FROM Shipper WHERE email=? AND password=?";
+                try ( PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+                    preparedStatement.setString(1, email);
+                    preparedStatement.setString(2, password);
+                    try ( ResultSet resultSet = preparedStatement.executeQuery()) {
+                        if (resultSet.next()) {
+                            Shipper shipper = new Shipper();
+                            shipper.setShipperID(resultSet.getInt("ShipperID"));
+                            shipper.setAddress(resultSet.getString("address"));
+                            shipper.setPhone(resultSet.getString("phone"));
+                            shipper.setPassword(resultSet.getString("password"));
+                            shipper.setName(resultSet.getString("name"));
+                            shipper.setEmail(resultSet.getString("email"));
+                            shipper.setShopID(resultSet.getInt("shopID"));
+                            HttpSession session = request.getSession();
+                            session.setAttribute("account", shipper);
+                            response.sendRedirect("browsing");
                         } else {
                             request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
                             request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -142,16 +174,6 @@ public class loginServlet extends HttpServlet {
                 response.sendRedirect("login.jsp?error=Database error" + e);
             }
         }
-//        else if ("Shipper".equals(role)) {
-//            if (ShiperDB.loginShipper(email, password)) {
-//                out.println("Shipper login successful!");
-//            } else {
-//                out.println("Shipper login failed.");
-//            }
-//        } else {
-//            out.println("Invalid role.");
-//        }
-
     }
 
     @Override

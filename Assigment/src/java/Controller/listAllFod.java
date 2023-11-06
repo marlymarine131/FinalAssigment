@@ -58,20 +58,26 @@ public class listAllFod extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int shopID = Integer.parseInt(request.getParameter("shopID"));
-        // Use FoodDAO to get the list of foods for the given shopID
-        
         OwnerDatabase foodDAO = new OwnerDatabase();
-        HttpSession session = request.getSession();
-        Shop sh = foodDAO.getShopByID(shopID);
-        session.setAttribute("shop", sh);
-        List<Food> foods = foodDAO.getFoodsByShopID(shopID);
+        // Use FoodDAO to get the list of foods for the given shopID
+        if ((Shop) request.getSession().getAttribute("shop") == null) {
+            int shopID = Integer.parseInt(request.getParameter("shopID"));
+            HttpSession session = request.getSession();
+            Shop sh = foodDAO.getShopByID(shopID);
+            session.setAttribute("shop", sh);
+            List<Food> foods = foodDAO.getFoodsByShopID(shopID);
+            // Set the list of foods in the request attribute
+            request.setAttribute("listFoods", foods);
 
-        // Set the list of foods in the request attribute
-        request.setAttribute("listFoods", foods);
+            // Forward to a JSP page to display the list of foods
+            request.getRequestDispatcher("ManageShop1.jsp").forward(request, response);
+        } else {
+            Shop sh = (Shop) request.getSession().getAttribute("shop");
+            List<Food> foods = foodDAO.getFoodsByShopID(sh.getShopID());
+            request.setAttribute("listFoods", foods);
+            request.getRequestDispatcher("ManageShop1.jsp").forward(request, response);
+        }
 
-        // Forward to a JSP page to display the list of foods
-        request.getRequestDispatcher("ManageShop1.jsp").forward(request, response);
     }
 
     /**

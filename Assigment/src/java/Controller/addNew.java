@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 
 import javax.servlet.ServletException;
@@ -28,11 +29,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import javax.servlet.http.Part;
-import model.Customer;
-
-import model.OwnerDatabase;
-
 import model.DatabaseConnector;
+import model.OwnerDatabase;
+import model.ShipperDatabase;
+import model.Shop;
+
 
 /**
  *
@@ -83,7 +84,14 @@ public class addNew extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        OwnerDatabase sd = new OwnerDatabase();
+        List<Shop> shoplist1 = sd.getAllShop();
+
+        request.setAttribute("shopList1", shoplist1);
+//        request.setAttribute("shopList1", shoplist1);
         request.getRequestDispatcher("addNewAccout.jsp").forward(request, response);
+
     }
 
     /**
@@ -101,6 +109,11 @@ public class addNew extends HttpServlet {
         String password = request.getParameter("password");
         String conPassword = request.getParameter("conPassword");
         String role = request.getParameter("role");
+        if (!password.equals(conPassword)) {
+            request.setAttribute("errorMessage", "conferm password wrong");
+            response.sendRedirect("addNew");
+        }
+        ShipperDatabase sh = new ShipperDatabase();
         OwnerDatabase ow = new OwnerDatabase();
         DatabaseConnector dc = new DatabaseConnector();
         if ("Owner".equals(role)) {
@@ -119,11 +132,10 @@ public class addNew extends HttpServlet {
 
             try {
                 if (ow.insertOwner(taxNumber, ownerName, areaServe, phone, description, email, addressHead, bannerInputStream, password)) {
-
                     response.sendRedirect("login");
                 } else {
                     request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
-                    request.getRequestDispatcher("login.jsp").forward(request, response);
+                    response.sendRedirect("addNew");
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(addNew.class.getName()).log(Level.SEVERE, null, ex);
@@ -151,17 +163,37 @@ public class addNew extends HttpServlet {
                 return;
             }
             try {
-                if(dc.insertCustomer(address, phone, password, name, email)){
+                if (dc.insertCustomer(address, phone, password, name, email)) {
                     response.sendRedirect("login");
-                } else{
-                    
+                } else {
+
                 }
             } catch (SQLException ex) {
-                request.setAttribute("MSG",ex);
+                request.setAttribute("MSG", ex);
                 request.getRequestDispatcher("fail.jsp").forward(request, response);
             }
-            
+
         } else if ("Shipper".equals(role)) {
+            String address = request.getParameter("addressShipper");
+            String phone = request.getParameter("phoneShipper");
+            String name = request.getParameter("nameShipper");
+            int shopID = Integer.parseInt(request.getParameter("shopID"));
+            if (email == null || email.isEmpty() || password == null || password.isEmpty()
+                    || conPassword == null || conPassword.isEmpty() || role == null || role.isEmpty()) {
+                response.sendRedirect("addNewAccout.jsp?error=Please fill in all fields");
+                return;
+            }
+            if (!email.matches("\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b")) {
+                response.sendRedirect("addNewAccout.jsp?error=Invalid email format");
+                return;
+            }
+            try {
+                if (sh.insertShipper(password, name, email, address, phone, shopID)) {
+                    response.sendRedirect("login");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(addNew.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         } else {
             // Xử lý cho các role khác hoặc thông báo lỗi nếu cần

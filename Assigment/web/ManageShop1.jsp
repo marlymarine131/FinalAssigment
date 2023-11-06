@@ -18,6 +18,8 @@
 
                     </div>
                     <div class="col-sm-6">
+
+
                         <a href="#addEmployeeModal"  class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Product</span></a>
                         <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>						
                     </div>
@@ -65,14 +67,6 @@
                             </td>
                         </tr>
                     </c:forEach>
-
-                    <c:forEach var="cartItem" items="${listFoods}">
-                        <tr>
-                            <td>${cartItem.foodID}</td>
-                            <td>${cartItem.cartID}</td>
-                            <td>${cartItem.cusID} $</td> 
-                        </tr>
-                    </c:forEach>
                 </tbody>
             </table>
             <div class="clearfix">
@@ -104,7 +98,7 @@
         </ul>
     </div>
 </div>
-<a href="url"><button type="button" class="btn btn-primary">Back to home</button></a>
+<a href="listAllOrder"><button type="button" class="btn btn-primary">Back to home</button></a>
 <div id="addEmployeeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">

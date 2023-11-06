@@ -11,22 +11,22 @@ package model;
 public class Order {
 
     private int orderID;
-    private Integer shipperID; // Integer để xử lý giá trị null
     private int cusID;
     private String address;
-    private double total_price;
+    private double totalPrice;
     private String status;
 
     public Order() {
     }
-
     
-    public Order(int orderID, Integer shipperID, int cusID, String address, double total_price, String status) {
+    
+    
+    
+    public Order(int orderID, int cusID, String address, double totalPrice, String status) {
         this.orderID = orderID;
-        this.shipperID = shipperID;
         this.cusID = cusID;
         this.address = address;
-        this.total_price = total_price;
+        this.totalPrice = totalPrice;
         this.status = status;
     }
 
@@ -36,14 +36,6 @@ public class Order {
 
     public void setOrderID(int orderID) {
         this.orderID = orderID;
-    }
-
-    public Integer getShipperID() {
-        return shipperID;
-    }
-
-    public void setShipperID(Integer shipperID) {
-        this.shipperID = shipperID;
     }
 
     public int getCusID() {
@@ -62,12 +54,12 @@ public class Order {
         this.address = address;
     }
 
-    public double getTotal_price() {
-        return total_price;
+    public double getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setTotal_price(double total_price) {
-        this.total_price = total_price;
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public String getStatus() {
@@ -78,9 +70,5 @@ public class Order {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "Order{" + "orderID=" + orderID + ", shipperID=" + shipperID + ", cusID=" + cusID + ", address=" + address + ", total_price=" + total_price + ", status=" + status + '}';
-    }
-    
+   
 }

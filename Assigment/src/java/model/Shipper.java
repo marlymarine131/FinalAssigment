@@ -9,22 +9,36 @@ package model;
  * @author Hung Nguyen
  */
 public class Shipper {
-    String address;
-    String username;
-    int shipperID;
-    String email;
-    String name;
-    String password;
-    String phone;
 
-    public Shipper(String address, String username, int shipperID, String email, String name, String password, String phone) {
-        this.address = address;
-        this.username = username;
+    private int shipperID;
+    private String address;
+    private String phone;
+    private String password;
+    private String name;
+    private String email;
+    private int shopID;
+
+    // Constructors
+    public Shipper() {
+    }
+
+    public Shipper(int shipperID, String address, String phone, String password, String name, String email, int shopID) {
         this.shipperID = shipperID;
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this.address = address;
         this.phone = phone;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.shopID = shopID;
+    }
+
+    // Getters and Setters
+    public int getShipperID() {
+        return shipperID;
+    }
+
+    public void setShipperID(int shipperID) {
+        this.shipperID = shipperID;
     }
 
     public String getAddress() {
@@ -35,36 +49,12 @@ public class Shipper {
         this.address = address;
     }
 
-    public String getUsername() {
-        return username;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getShipperID() {
-        return shipperID;
-    }
-
-    public void setShipperID(int shipperID) {
-        this.shipperID = shipperID;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPassword() {
@@ -75,13 +65,28 @@ public class Shipper {
         this.password = password;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getName() {
+        return name;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }     
-    
-}
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getShopID() {
+        return shopID;
+    }
+
+    public void setShopID(int shopID) {
+        this.shopID = shopID;
+    }
+
+}

@@ -30,10 +30,7 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th></th>
-
                         <th>Name</th>
-
                         <th>Location</th>
                         <th>banner</th>
                         <th>action</th>
@@ -42,9 +39,7 @@
                 <tbody>
                     <c:forEach items="${shopList}" var="o">
                         <tr>
-                            <td>${o.shopID}</td>
                             <td>${o.shopAddress}</td>
-
                             <td>${o.shopName}</td>
                             <td>
                                 <c:set var="base64Banner" value="${Base64.getEncoder().encodeToString(o.banner)}" />
@@ -57,7 +52,6 @@
                                 </div>
                             </td>
                             <td>
-
                                 <a href="ManageFood.jsp?Shopid=${o.shopID}" class="edit">
                                     <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
                                 </a>

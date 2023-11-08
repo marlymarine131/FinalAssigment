@@ -53,6 +53,7 @@ create table Shipper (
 	shopID int FOREIGN KEY REFERENCES Shop(shopID)
 	);
 	go
+	drop table Shipper
 CREATE TABLE OrderTotal (
     OrderID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     cusID INT NOT NULL,
@@ -81,6 +82,10 @@ CREATE TABLE OrderShop(
 	phone varchar(10),
 	ShipperID INT null  FOREIGN KEY REFERENCES Shipper(ShipperID),
 )
+
+
+
+
 CREATE TRIGGER tr_OrderDetail_Insert
 ON OrderDetail
 AFTER INSERT , UPDATE
@@ -93,6 +98,9 @@ BEGIN
     INNER JOIN Food f ON od.foodID = f.foodID
     INNER JOIN inserted i ON od.orderDetailID = i.orderDetailID;
 END;
+
+
+
 go
 CREATE TRIGGER UpdateShopOrderPrice
 ON OrderDetail
@@ -105,13 +113,14 @@ BEGIN
     SET os.shopOrderPrice = COALESCE((
         SELECT SUM(od.subTotal)
         FROM OrderDetail od
-        WHERE os.orderShopID = od.orderShopID
+        WHERE os.shopID = od.shopID
     ), 0)
     FROM OrderShop os
     INNER JOIN inserted i ON os.orderShopID = i.orderShopID;
-
 END;
 go
+
+
 CREATE TRIGGER trg_UpdateShopOrderPrice
 ON OrderDetail
 AFTER INSERT, UPDATE, DELETE
@@ -122,14 +131,13 @@ BEGIN
         SET shopOrderPrice = (
             SELECT ISNULL(SUM(subTotal), 0)
             FROM OrderDetail
-            WHERE OrderDetail.orderShopID = OrderShop.orderShopID
+            WHERE OrderDetail.shopID = OrderShop.shopID
         )
         FROM OrderShop
         WHERE OrderShop.orderShopID IN (SELECT DISTINCT orderShopID FROM INSERTED)
             OR OrderShop.orderShopID IN (SELECT DISTINCT orderShopID FROM DELETED)
     END
 END;
-
 
 
 

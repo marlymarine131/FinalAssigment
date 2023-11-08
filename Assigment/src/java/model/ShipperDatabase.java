@@ -39,7 +39,7 @@ public class ShipperDatabase {
         }
     }
 
-    public boolean insertShipper(String password, String name, String email, String address, String phone,int shopID) throws SQLException {
+    public boolean insertShipper(String password, String name, String email, String address, String phone, int shopID) throws SQLException {
         try ( Connection connection = DriverManager.getConnection(url, userId, passWord)) {
             String sql = "INSERT INTO Shipper (password, name, email, address, phone,shopID) VALUES (?, ?, ?, ?, ?, ?)";
             try ( PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -98,13 +98,68 @@ public class ShipperDatabase {
     }
 
     public void updateOrderShopStatus(int shipperID, String status) {
-        String query = "UPDATE OderShop SET status = ? WHERE ShipperID = ?";
+        String query = "UPDATE OrderShop SET status = ? WHERE ShipperID = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, status);
             preparedStatement.setInt(2, shipperID);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
+        }
+    }
+
+    public void updateShipperID(int orderShopID, int shipperID) throws SQLException {
+        // Kết nối đến cơ sở dữ liệu
+        try ( Connection connection = DriverManager.getConnection(url, userId, passWord)) {
+            // Tạo truy vấn SQL với tham số
+            String sql = "UPDATE OrderShop SET ShipperID = ? WHERE orderShopID = ?";
+
+            try ( PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                // Thiết lập giá trị cho tham số
+                preparedStatement.setInt(1, shipperID);
+                preparedStatement.setInt(2, orderShopID);
+
+                // Thực hiện cập nhật
+                preparedStatement.executeUpdate();
+            }
+        }
+    }
+
+    public List<orderShop> ListOrderShop(int shipperID) throws SQLException {
+        String query = "SELECT * FROM OrderShop WHERE "
+                + "ShipperID = ?";
+        List<orderShop> orderShops = new ArrayList<>();
+
+        try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, shipperID);
+
+            try ( ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int orderShopID = resultSet.getInt("orderShopID");
+                    int shopID = resultSet.getInt("shopID");
+                    String status = resultSet.getString("status");
+                    BigDecimal shopOrderPrice = resultSet.getBigDecimal("shopOrderPrice");
+                    String address = resultSet.getString("address");
+                    String phone = resultSet.getString("phone");
+                    orderShop OrderShop = new orderShop(orderShopID, shopID, status, shopOrderPrice, address, phone, shipperID);
+                    orderShops.add(OrderShop);
+                }
+            }
+        }
+        return orderShops;
+    }
+
+    public boolean updateOrderStatus(int orderShopID) {
+        String query = "UPDATE OrderShop SET status = 'Delivered' WHERE orderShopID = ?";
+        try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, orderShopID);
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

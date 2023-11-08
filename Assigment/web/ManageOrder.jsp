@@ -21,54 +21,92 @@
                     </div>
                 </div>
             </div>
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>
-                            <span class="custom-checkbox">
-                                <input type="checkbox" id="selectAll">
-                                <label for="selectAll"></label>
-                            </span>
-                        </th>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Image</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach items="${orderList}" var="ol">
+            <form action="updateShipper" enctype="multipart/form-data" method="post">
+                <table class="table table-striped table-hover">
+                    <thead>
                         <tr>
-                            <td>
-                                ${ol.orderShopID}
-                            </td>
-                            <td>${ol.status}</td>
-                            <td>${ol.shopOrderPrice}</td>
-                            <td><select name="role" id="role" class="signup-input" onchange="handleRoleChange()">
-                                    <c:forEach items="${shiperList}" var="sl">
-                                        <option value="${sl.shipperID}">${sl.name}</option>F
+                            <th>address</th>
+                            <th>phone</th>
+                            <th>status</th>
+                            <th>Price</th>
+                            <th>shipperID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${orderList}" var="ol" varStatus="status">
+                            <tr>
+                                <td>
+                                    ${ol.address}
+                                </td>
+                                <td>
+                                    ${ol.phone}
+                                </td>
+                                <td>${ol.status}</td>
+                                <td>${ol.shopOrderPrice}</td>
+                                <td><select name="shipperID${status.index}" id="shipperID" onchange="handleRoleChange()">                                     
+                                        <c:forEach items="${shiperList}" var="sl">
+                                            <option value="${sl.shipperID}"<c:if test="${sl.shipperID eq ol.shipperID}"> selected</c:if>>${sl.name}</option>
+                                        </c:forEach>
+                                    </select></td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+                <button type="submit">update order</button>
+            </form>
+
+
+<!--            <form action="updateShipper" method="post">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="shoping__cart__table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>address</th>
+                                        <th>phone</th>
+                                        <th>status</th>
+                                        <th>Price</th>
+                                        <th>shipperID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach items="${orderList}" var="ol" varStatus="status">
+                                        <tr>
+                                            <td>
+                                                ${ol.address}
+                                            </td>
+                                            <td>
+                                                ${ol.phone}
+                                            </td>
+                                            <td>${ol.status}</td>
+                                            <td>${ol.shopOrderPrice}</td>
+                                            <td><select name="shipperID${status.index}" id="shipperID" onchange="handleRoleChange()">                                     
+                                                    <c:forEach items="${shiperList}" var="sl">
+                                                        <option value="${sl.shipperID}"<c:if test="${sl.shipperID eq ol.shipperID}"> selected</c:if>>${sl.name}</option>
+                                                    </c:forEach>
+                                                </select></td>
+                                        </tr>
                                     </c:forEach>
-                                </select></td>
-                    
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
-            <div class="clearfix">
-                <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-                <ul class="pagination">
-                    <li class="page-item disabled"><a href="#">Previous</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">4</a></li>
-                    <li class="page-item"><a href="#" class="page-link">5</a></li>
-                    <li class="page-item"><a href="#" class="page-link">Next</a></li>
-                </ul>
-            </div>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="shoping__checkout">
+                            <h5>Cart Total</h5>               
+                            <ul>
+                                <li>Total <span id="total">$0.00</span></li>
+                            </ul>
+                            <button type="submit" class="primary-btn">update shipper</button>
+                        </div>
+                    </div>
+                </div>
+            </form>-->
         </div>
-        <a href="#"><button type="button" class="btn btn-primary">Back to home</button>
+
 
     </div>
     <!-- Edit Modal HTML -->

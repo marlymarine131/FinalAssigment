@@ -6,17 +6,28 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Owner;
-import model.OwnerDatabase;
+import model.*;
 
 /**
  *
  * @author oteee
  */
+
+
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2 MB
+        maxFileSize = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize = 1024 * 1024 * 50 // 50 MB
+)
 public class updateShipper extends HttpServlet {
 
     /**
@@ -36,7 +47,7 @@ public class updateShipper extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet updateShipper</title>");            
+            out.println("<title>Servlet updateShipper</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet updateShipper at " + request.getContextPath() + "</h1>");
@@ -72,7 +83,27 @@ public class updateShipper extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         OwnerDatabase ownerDAO = new OwnerDatabase();
-        
+        ShipperDatabase sd = new ShipperDatabase();
+        Shop sh = (Shop) request.getSession().getAttribute("shop");
+        List<orderShop> list = ownerDAO.getOrderShopsByShopID(sh.getShopID());
+
+        for (orderShop shop : list) {
+            String shipperID = request.getParameter("shipperID" + list.indexOf(shop));
+            if (shipperID != null && !shipperID.isEmpty()) {
+                int shipperIDInt = Integer.parseInt(shipperID);
+                try {
+                    // Gọi hàm DAO để cập nhật ShipperID trong cơ sở dữ liệu
+                    ownerDAO.updateShipperID(shop.getOrderShopID(), shipperIDInt);
+                    request.setAttribute("MSG", "success");
+                    request.getRequestDispatcher("fail.jsp").forward(request, response);
+                } catch (SQLException ex) {
+                    request.setAttribute("MSG", ex);
+                    request.getRequestDispatcher("fail.jsp").forward(request, response);
+                }
+            }
+        }
+        request.setAttribute("MSG", list.size());
+        request.getRequestDispatcher("fail.jsp").forward(request, response);
     }
 
     /**

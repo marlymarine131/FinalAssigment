@@ -34,7 +34,6 @@ import model.OwnerDatabase;
 import model.ShipperDatabase;
 import model.Shop;
 
-
 /**
  *
  * @author oteee
@@ -192,7 +191,8 @@ public class addNew extends HttpServlet {
                     response.sendRedirect("login");
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(addNew.class.getName()).log(Level.SEVERE, null, ex);
+                request.setAttribute("MSG", "sai roi em trai" + ex);
+                request.getRequestDispatcher("fail.jsp").forward(request, response);
             }
 
         } else {

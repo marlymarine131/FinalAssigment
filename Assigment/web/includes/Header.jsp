@@ -80,14 +80,14 @@
                         <ul>
                             <c:choose>
                                 <c:when test="${not empty sessionScope}">
-                                   <li><i class="fa fa-envelope"></i> ${sessionScope.owner.ownerName}</li>
+                                    <li><i class="fa fa-envelope"></i> ${sessionScope.owner.ownerName}</li>
                                     </c:when>
                                     <c:otherwise>
-                                                                   
-                                    </c:otherwise>
-                                </c:choose>
-                            
-                            
+
+                                </c:otherwise>
+                            </c:choose>
+
+
                         </ul>
                     </div>
                 </div>
@@ -111,14 +111,14 @@
                             <c:choose>
                                 <c:when test="${not empty sessionScope}">
                                     <a href="logOut"><i class="fa fa-user"></i> logOut</a>
-                                    </c:when>
-                                    <c:otherwise>
+                                </c:when>
+                                <c:otherwise>
                                     <a href="login"><i class="fa fa-user"></i> Login</a>                                 
-                                    </c:otherwise>
-                                      
-                                </c:choose>
-                                    <a href="addNew"><i class="fa fa-user"></i> sign Up</a> 
-                            
+                                </c:otherwise>
+
+                            </c:choose>
+                            <a href="addNew"><i class="fa fa-user"></i> sign Up</a> 
+
                         </div>
                     </div>
                 </div>
@@ -140,6 +140,8 @@
                         <li><a href="#">Pages</a>
                             <ul class="header__menu__dropdown">
                                 <li><a href="listAllShop">Manage Shop</a></li>
+                                <li><a href="listOrderShipper">Manage shipper</a></li>
+
                                 <li><a href="cartBrowsing">Shoping Cart</a></li>
                                 <li><a href="./checkout.jsp">Check Out</a></li>
                                 <li><a href="./blog-details.jsp">Blog Details</a></li>

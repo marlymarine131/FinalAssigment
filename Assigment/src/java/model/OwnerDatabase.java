@@ -282,7 +282,7 @@ public class OwnerDatabase {
     }
 
     public boolean addFood(int shopID, String foodName, String decription, BigDecimal price, InputStream image) throws SQLException {
-        String query = "INSERT INTO Food (shopID, foodName,decription, price, imagine) VALUES (?,?, ?, ?, ?)";
+        String query = "INSERT INTO Food (shopID, foodName, price, imagine) VALUES (?,?, ?, ?, ?)";
 
         try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, shopID);
@@ -435,12 +435,11 @@ public class OwnerDatabase {
         } catch (SQLException e) {
             e.printStackTrace(); // Handle the exception appropriately
         }
-
         return orderShops;
     }
 
     public void updateShipperID(int orderShopID, int shipperID) throws SQLException {
-        String query = "UPDATE OderShop SET ShipperID = ? WHERE orderShopID = ?";
+        String query = "UPDATE OrderShop SET ShipperID = ? WHERE orderShopID = ?";
         try (Connection connection = DriverManager.getConnection(url, userId, passWord);
                 PreparedStatement preparedStatement = connection.prepareStatement(query);){
             

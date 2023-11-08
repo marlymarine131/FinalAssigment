@@ -6,16 +6,22 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Shipper;
+import model.ShipperDatabase;
+import model.orderShop;
 
 /**
  *
  * @author oteee
  */
-public class CheckOut extends HttpServlet {
+public class listOrderShipper extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,10 +40,10 @@ public class CheckOut extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CheckOut</title>");            
+            out.println("<title>Servlet listOrderShipper</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CheckOut at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet listOrderShipper at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -55,7 +61,20 @@ public class CheckOut extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            Shipper shipper = (Shipper) request.getSession().getAttribute("account");
+            int shipperID = shipper.getShipperID();
+
+            ShipperDatabase shipperDatabase = new ShipperDatabase();
+            List<orderShop> orderShops = shipperDatabase.ListOrderShop(shipperID);
+
+            request.setAttribute("orderShops", orderShops);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("Shipper.jsp");
+            dispatcher.forward(request, response);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving order shops");
+        }
     }
 
     /**

@@ -12,26 +12,25 @@ import java.util.Arrays;
  * @author oteee
  */
 public class Food {
-    private int foodID;
+  private int foodID;
     private int shopID;
     private String foodName;
-    private String description;
-    private BigDecimal price;
-    private byte[] imagine;
+    private double price;
+    private byte[] image;
 
+    // Constructors
     public Food() {
     }
 
-    public Food(int foodID, int shopID, String foodName, String description, BigDecimal price, byte[] imagine) {
+    public Food(int foodID, int shopID, String foodName, double price, byte[] image) {
         this.foodID = foodID;
         this.shopID = shopID;
         this.foodName = foodName;
-        this.description = description;
         this.price = price;
-        this.imagine = imagine;
+        this.image = image;
     }
 
-
+    // Getters and Setters
     public int getFoodID() {
         return foodID;
     }
@@ -56,34 +55,26 @@ public class Food {
         this.foodName = foodName;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public byte[] getImagine() {
-        return imagine;
+    public byte[] getImage() {
+        return image;
     }
 
-    public void setImagine(byte[] imagine) {
-        this.imagine = imagine;
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     @Override
     public String toString() {
         return "Food [foodID=" + foodID + ", shopID=" + shopID + ", foodName=" + foodName
-                + ", price=" + price + ", imagine=" + Arrays.toString(imagine) + "]";
+                + ", price=" + price + ", imagine=" + Arrays.toString(image) + "]";
     }
 }
 

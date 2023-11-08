@@ -53,7 +53,7 @@
                             </td>
                             <td>${food.foodID}</td>
                             <td>${food.foodName}</td>
-                            <c:set var="base64Banner" value="${Base64.getEncoder().encodeToString(food.imagine)}" />
+                            <c:set var="base64Banner" value="${Base64.getEncoder().encodeToString(food.image)}" />
                             <td>
                                 <img src="data:image/jpeg;base64,${base64Banner}" alt="" width="394" height="255"/>
                             </td>
@@ -110,10 +110,6 @@
                     <div class="form-group">
                         <label>Food Name</label>
                         <input name="foodName" type="text" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <input name="description" type="text" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Price</label>

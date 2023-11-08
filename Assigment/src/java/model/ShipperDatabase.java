@@ -130,7 +130,8 @@ public class ShipperDatabase {
                 + "ShipperID = ?";
         List<orderShop> orderShops = new ArrayList<>();
 
-        try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try ( Connection connection = DriverManager.getConnection(url, userId, passWord); 
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, shipperID);
 
             try ( ResultSet resultSet = preparedStatement.executeQuery()) {

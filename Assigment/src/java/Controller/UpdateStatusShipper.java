@@ -61,7 +61,7 @@ public class UpdateStatusShipper extends HttpServlet {
         ShipperDatabase shipperDatabase = new ShipperDatabase();
         boolean success = shipperDatabase.updateOrderStatus(orderShopID);
         if(success){
-            response.sendRedirect("Shipper.jsp");
+            response.sendRedirect("listOrderShipper");
         } else{
             response.sendRedirect("fail.jsp");
         }

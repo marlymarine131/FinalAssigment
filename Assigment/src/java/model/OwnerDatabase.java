@@ -223,8 +223,8 @@ public class OwnerDatabase {
                 food.setFoodID(resultSet.getInt("foodID"));
                 food.setShopID(resultSet.getInt("shopID"));
                 food.setFoodName(resultSet.getString("foodName"));
-                food.setPrice(resultSet.getBigDecimal("price"));
-                food.setImagine(resultSet.getBytes("imagine"));
+                food.setPrice(resultSet.getDouble("price"));
+                food.setImage(resultSet.getBytes("imagine"));
 
                 foods.add(food);
             }
@@ -247,8 +247,8 @@ public class OwnerDatabase {
                 food.setFoodID(resultSet.getInt("foodID"));
                 food.setShopID(resultSet.getInt("shopID"));
                 food.setFoodName(resultSet.getString("foodName"));
-                food.setPrice(resultSet.getBigDecimal("price"));
-                food.setImagine(resultSet.getBytes("imagine"));
+                food.setPrice(resultSet.getDouble("price"));
+                food.setImage(resultSet.getBytes("imagine"));
                 return food;
             }
         } catch (SQLException e) {
@@ -269,8 +269,8 @@ public class OwnerDatabase {
                 food.setFoodID(resultSet.getInt("foodID"));
                 food.setShopID(resultSet.getInt("shopID"));
                 food.setFoodName(resultSet.getString("foodName"));
-                food.setPrice(resultSet.getBigDecimal("price"));
-                food.setImagine(resultSet.getBytes("imagine"));
+                food.setPrice(resultSet.getDouble("price"));
+                food.setImage(resultSet.getBytes("imagine"));
 
                 foods.add(food);
             }
@@ -282,14 +282,14 @@ public class OwnerDatabase {
     }
 
     public boolean addFood(int shopID, String foodName, String decription, BigDecimal price, InputStream image) throws SQLException {
-        String query = "INSERT INTO Food (shopID, foodName, price, imagine) VALUES (?,?, ?, ?, ?)";
+        String query = "INSERT INTO Food (shopID, foodName, price, imagine) VALUES (?,?, ?, ?)";
 
-        try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, shopID);
             preparedStatement.setString(2, foodName);
-            preparedStatement.setString(3, decription);
-            preparedStatement.setBigDecimal(4, price);
-            preparedStatement.setBlob(5, image);
+            preparedStatement.setBigDecimal(3, price);
+            preparedStatement.setBlob(4, image);
 
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
@@ -317,7 +317,7 @@ public class OwnerDatabase {
 
     public List<Food> listCartFood(int cusID) {
         List<Food> foods = new ArrayList<>();
-        String query = "select c.foodID,c.foodName,c.price,c.shopID,c.decription,c.imagine\n"
+        String query = "select c.foodID,c.foodName,c.price,c.shopID,c.imagine\n"
                 + "from customer a inner join OrderDetail b on a.cusID  = b.cusID\n"
                 + "inner join Food c on c.foodID = b.foodID "
                 + "where  a.cusID = ?";
@@ -329,9 +329,8 @@ public class OwnerDatabase {
                 food.setFoodID(resultSet.getInt("foodID"));
                 food.setShopID(resultSet.getInt("shopID"));
                 food.setFoodName(resultSet.getString("foodName"));
-                food.setDescription(resultSet.getString("decription"));
-                food.setPrice(resultSet.getBigDecimal("price"));
-                food.setImagine(resultSet.getBytes("imagine"));
+                food.setPrice(resultSet.getDouble("price"));
+                food.setImage(resultSet.getBytes("imagine"));
                 foods.add(food);
             }
             return foods;

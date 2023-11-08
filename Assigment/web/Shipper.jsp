@@ -23,32 +23,29 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>
-                            <span class="custom-checkbox">
-                                <input type="checkbox" id="selectAll">
-                                <label for="selectAll"></label>
-                            </span>
-                        </th>
-                        <th></th>
                         <th>Address</th>
                         <th>Phone</th>
                         <th>Price</th>
                         <th>Status</th>
+                        <th>action</th>
+
                     </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${orderShops}" var="os">
-                    <tr>
-                        <td>
-                            ${os.address}
-                        </td>
-                        <td>${os.phone}</td>
-                        <td>${os.shopOrderPrice}</td>
+                    <c:forEach items="${orderShops}" var="os">
+                        <tr>
+                            <td>
+                                ${os.address}
+                            </td>
+                            <td>${os.phone}</td>
+                            <td>${os.shopOrderPrice}</td>
+                            <td>${os.status}</td>
+                            
 
-                        <td><a href="UpdateStatusShipper?orderShopID=${os.orderShopID}" class="primary-btn">Delivered</a></td>
+                            <td><a href="UpdateStatusShipper?orderShopID=${os.orderShopID}" class="primary-btn">Delivered</a></td>
 
-                    </tr>
-                </c:forEach>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
             <div class="clearfix">

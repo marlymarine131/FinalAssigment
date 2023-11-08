@@ -143,6 +143,7 @@ END;
 
 
 
+UPDATE OrderShop SET ShipperID = 1 WHERE orderShopID = 169
 
 
 	

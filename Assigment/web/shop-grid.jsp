@@ -395,7 +395,7 @@
                 </div>
                 <div class="row">
                     <c:forEach items="${listFoods}" var="food" >
-                        <c:set var="base64Banner" value="${Base64.getEncoder().encodeToString(food.imagine)}" />
+                        <c:set var="base64Banner" value="${Base64.getEncoder().encodeToString(food.image)}" />
                         
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">

@@ -31,7 +31,7 @@
                                         </td>
                                         <td class="subtotal" data-subtotal="${status.index}">${cartItem.price} $</td>
                                         <td>
-                                            <img src="data:image/jpeg;base64,${Base64.getEncoder().encodeToString(cartItem.imagine)}" alt="" width="394" height="255"/>
+                                            <img src="data:image/jpeg;base64,${Base64.getEncoder().encodeToString(cartItem.image)}" alt="" width="394" height="255"/>
                                         </td>
 
                                     </tr>

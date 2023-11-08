@@ -67,7 +67,6 @@ public class listOrderShipper extends HttpServlet {
 
             ShipperDatabase shipperDatabase = new ShipperDatabase();
             List<orderShop> orderShops = shipperDatabase.ListOrderShop(shipperID);
-
             request.setAttribute("orderShops", orderShops);
             RequestDispatcher dispatcher = request.getRequestDispatcher("Shipper.jsp");
             dispatcher.forward(request, response);

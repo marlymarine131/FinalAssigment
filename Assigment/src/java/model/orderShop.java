@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author oteee
@@ -13,19 +15,21 @@ public class orderShop {
     private int orderShopID;
     private int shopID;
     private String status;
+    private BigDecimal shopOrderPrice;
     private String address;
-    private double shopOrderPrice;
+    private String phone;
     private Integer shipperID;
 
     public orderShop() {
     }
 
-    public orderShop(int orderShopID, int shopID, String status, String address, double shopOrderPrice, Integer shipperID) {
+    public orderShop(int orderShopID, int shopID, String status, BigDecimal shopOrderPrice, String address, String phone, Integer shipperID) {
         this.orderShopID = orderShopID;
         this.shopID = shopID;
         this.status = status;
-        this.address = address;
         this.shopOrderPrice = shopOrderPrice;
+        this.address = address;
+        this.phone = phone;
         this.shipperID = shipperID;
     }
 
@@ -53,6 +57,14 @@ public class orderShop {
         this.status = status;
     }
 
+    public BigDecimal getShopOrderPrice() {
+        return shopOrderPrice;
+    }
+
+    public void setShopOrderPrice(BigDecimal shopOrderPrice) {
+        this.shopOrderPrice = shopOrderPrice;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -61,12 +73,12 @@ public class orderShop {
         this.address = address;
     }
 
-    public double getShopOrderPrice() {
-        return shopOrderPrice;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setShopOrderPrice(double shopOrderPrice) {
-        this.shopOrderPrice = shopOrderPrice;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Integer getShipperID() {
@@ -75,6 +87,11 @@ public class orderShop {
 
     public void setShipperID(Integer shipperID) {
         this.shipperID = shipperID;
+    }
+
+    @Override
+    public String toString() {
+        return "orderShop{" + "orderShopID=" + orderShopID + ", shopID=" + shopID + ", status=" + status + ", shopOrderPrice=" + shopOrderPrice + ", address=" + address + ", phone=" + phone + ", shipperID=" + shipperID + '}';
     }
 
     

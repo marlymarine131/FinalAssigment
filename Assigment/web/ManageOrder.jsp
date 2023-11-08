@@ -30,7 +30,7 @@
                                 <label for="selectAll"></label>
                             </span>
                         </th>
-                        <th>ID</th>
+                        <th></th>
                         <th>Name</th>
                         <th>Image</th>
                         <th>Price</th>

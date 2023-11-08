@@ -18,10 +18,11 @@
 
                     </div>
                     <div class="col-sm-6">
-
-
                         <a href="#addEmployeeModal"  class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Product</span></a>
                         <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>						
+                        <!--<a href="listAllOrder" class="btn btn-danger" ><button type="button" class="btn btn-primary">Back to home</button></a>-->                        
+                        <a href="listAllOrder" class="btn btn-danger"><i class="material-icons">&#xe8fe;</i><span>checkOrder</span></a>						
+
                     </div>
                 </div>
             </div>
@@ -98,7 +99,6 @@
         </ul>
     </div>
 </div>
-<a href="listAllOrder"><button type="button" class="btn btn-primary">Back to home</button></a>
 <div id="addEmployeeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">

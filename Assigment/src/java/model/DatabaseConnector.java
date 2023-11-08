@@ -128,66 +128,65 @@ public class DatabaseConnector {
         return null;
     }
 
-    public Order insertOrder(int cusID) throws SQLException {
-        Order order = null;
+//    public Order insertOrder(int cusID) throws SQLException {
+//        Order order = null;
+//
+//        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD); 
+//                PreparedStatement preparedStatement = connection.prepareStatement(
+//                "INSERT INTO OrderTotal (cusID, address) VALUES (?, (SELECT b.address FROM customer b WHERE b.cusID = ?))",
+//                Statement.RETURN_GENERATED_KEYS)) {
+//
+//            preparedStatement.setInt(1, cusID);
+//            preparedStatement.setInt(2, cusID);
+//            preparedStatement.executeUpdate();
+//
+//            try ( ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+//                if (generatedKeys.next()) {
+//                    int orderId = generatedKeys.getInt(1);
+//
+//                    // Now you can create and return the Order object with the generated OrderID
+//                    order = new Order();
+//                    order.setOrderID(orderId);
+//                    order.setCusID(cusID);
+//                    // Set other properties of the Order if needed
+//                    try ( PreparedStatement selectStatement = connection.prepareStatement(
+//                            "SELECT  address, total_price, status FROM OrderTotal WHERE OrderID = ?")) {
+//
+//                        selectStatement.setInt(1, orderId);
+//                        try ( ResultSet resultSet = selectStatement.executeQuery()) {
+//                            if (resultSet.next()) {
+//       
+//                                order.setAddress(resultSet.getString("address"));
+//                                order.setTotalPrice(resultSet.getDouble("total_price"));
+//                                order.setStatus(resultSet.getString("status"));
+//                                // Set other properties based on your Order class
+//                            } else {
+//                                // Handle the case where no data was retrieved
+//                                throw new SQLException("Failed to retrieve Order details.");
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    // Handle the case where no keys were generated
+//                    throw new SQLException("Failed to get the generated OrderID.");
+//                }
+//            }
+//        }
+//
+//        return order;
+//    }
 
-        try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD); 
-                PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO OrderTotal (cusID, address) VALUES (?, (SELECT b.address FROM customer b WHERE b.cusID = ?))",
-                Statement.RETURN_GENERATED_KEYS)) {
+    public void updateOrder(int quantity, int orderDetailID, int orderShopID) throws SQLException {
 
-            preparedStatement.setInt(1, cusID);
-            preparedStatement.setInt(2, cusID);
-            preparedStatement.executeUpdate();
-
-            try ( ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int orderId = generatedKeys.getInt(1);
-
-                    // Now you can create and return the Order object with the generated OrderID
-                    order = new Order();
-                    order.setOrderID(orderId);
-                    order.setCusID(cusID);
-                    // Set other properties of the Order if needed
-                    try ( PreparedStatement selectStatement = connection.prepareStatement(
-                            "SELECT  address, total_price, status FROM OrderTotal WHERE OrderID = ?")) {
-
-                        selectStatement.setInt(1, orderId);
-                        try ( ResultSet resultSet = selectStatement.executeQuery()) {
-                            if (resultSet.next()) {
-       
-                                order.setAddress(resultSet.getString("address"));
-                                order.setTotalPrice(resultSet.getDouble("total_price"));
-                                order.setStatus(resultSet.getString("status"));
-                                // Set other properties based on your Order class
-                            } else {
-                                // Handle the case where no data was retrieved
-                                throw new SQLException("Failed to retrieve Order details.");
-                            }
-                        }
-                    }
-                } else {
-                    // Handle the case where no keys were generated
-                    throw new SQLException("Failed to get the generated OrderID.");
-                }
-            }
-        }
-
-        return order;
-    }
-
-    public boolean updateOrder(int quantity, int orderID, int orderDetailID, int orderShopID) throws SQLException {
-
-        String query = "UPDATE OrderDetail SET quantity = ?, OrderID = ?,orderShopID =? WHERE orderDetailID = ?";
+        String query = "UPDATE OrderDetail SET quantity = ?,orderShopID =? WHERE orderDetailID = ?";
 
         try ( Connection connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD); 
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, quantity);
-            preparedStatement.setInt(2, orderID);
+//            preparedStatement.setInt(2, orderID);
+            preparedStatement.setInt(2, orderShopID);
             preparedStatement.setInt(3, orderDetailID);
-            preparedStatement.setInt(4, orderShopID);
             int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
         }
     }
 

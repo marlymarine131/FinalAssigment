@@ -6,21 +6,18 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.*;
+import model.Owner;
+import model.OwnerDatabase;
 
 /**
  *
  * @author oteee
  */
-public class listAllShop extends HttpServlet {
+public class updateShipper extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +36,10 @@ public class listAllShop extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet listAllShop</title>");
+            out.println("<title>Servlet updateShipper</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet listAllShop at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet updateShipper at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -60,21 +57,7 @@ public class listAllShop extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        request.getRequestDispatcher("ManageShop.jsp").forward(request, response);
-        OwnerDatabase ownerDatabase = new OwnerDatabase();
-        Owner ow = (Owner) request.getSession().getAttribute("accout");
-
-        List<Shop> shopList;
-        try {
-            shopList = ownerDatabase.getShopByOwnerID(ow.getOwnerID());
-            request.setAttribute("shopList", shopList);
-            request.getRequestDispatcher("ManageShop.jsp").forward(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(listAllShop.class.getName()).log(Level.SEVERE, null, ex);
-            request.setAttribute("MSG", ex);
-            request.getRequestDispatcher("fail.jsp").forward(request, response);
-        }
-
+        processRequest(request, response);
     }
 
     /**
@@ -88,7 +71,8 @@ public class listAllShop extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        OwnerDatabase ownerDAO = new OwnerDatabase();
+        
     }
 
     /**

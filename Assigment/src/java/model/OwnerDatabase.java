@@ -158,14 +158,13 @@ public class OwnerDatabase {
         return shopList;
     }
 
-    public List<Shop> getShopByOwnerID(int ownerId) {
+    public List<Shop> getShopByOwnerID(int ownerId) throws SQLException {
         List<Shop> shopList = new ArrayList<>();
         String query = "SELECT * FROM Shop where ownerID = ?";
 
-        try ( Connection connection = DriverManager.getConnection(url, userId, passWord); 
-                PreparedStatement preparedStatement = connection.prepareStatement(query); 
-                ResultSet resultSet = preparedStatement.executeQuery()) {
+        try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  PreparedStatement preparedStatement = connection.prepareStatement(query);) {
             preparedStatement.setInt(1, ownerId);
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Shop product = new Shop();
                 product.setShopID(resultSet.getInt("shopID"));
@@ -175,8 +174,6 @@ public class OwnerDatabase {
                 product.setBanner(resultSet.getBytes("banner"));
                 shopList.add(product);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         return shopList;
@@ -344,60 +341,70 @@ public class OwnerDatabase {
         return foods;
     }
 
-    public List<orderShop> processOrderDetails(List<Integer> shopIDs) throws SQLException {
+    public List<orderShop> processOrderDetails(List<Integer> shopIDs, int cusID) throws SQLException {
         List<orderShop> orderShopList = new ArrayList<>();
         for (Integer shopID : shopIDs) {
-            orderShopList.add(insertOrderShop(shopID));
+            orderShopList.add(insertOrderShop(shopID, cusID));
         }
         return orderShopList;
     }
 
-    public List<Integer> getShopIDs() {
-        String query = "SELECT DISTINCT shopID FROM OrderDetail";
-        List<Integer> shopIDs = new ArrayList<>();
+   public List<Integer> getShopIDs(int cusID) throws SQLException {
+    String query = "SELECT DISTINCT shopID FROM OrderDetail where cusID = ?";
+    List<Integer> shopIDs = new ArrayList<>();
+    
+    try (Connection connection = DriverManager.getConnection(url, userId, passWord);
+         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+         
+        preparedStatement.setInt(1, cusID); // Move this line up to set the parameter before executing the query
+        ResultSet resultSet = preparedStatement.executeQuery();
 
-        try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  PreparedStatement preparedStatement = connection.prepareStatement(query);  ResultSet resultSet = preparedStatement.executeQuery()) {
-
-            while (resultSet.next()) {
-                int shopID = resultSet.getInt("shopID");
-                shopIDs.add(shopID);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception appropriately
+        while (resultSet.next()) {
+            int shopID = resultSet.getInt("shopID");
+            shopIDs.add(shopID);
         }
-
-        return shopIDs;
     }
 
-    public orderShop insertOrderShop(int shopID) {
-        String query = "INSERT INTO OrderShop (shopID, address) VALUES (?, select c.address\n"
-                + "from OrderDetail a inner join OrderShop b on a.orderShopID = b.orderShopID\n"
-                + "inner join customer c on c.cusID = a.cusID\n"
-                + "where a.shopID = ? )";
-        String selectQuery = "SELECT * FROM OrderShop WHERE orderShopID = SCOPE_IDENTITY()";
+    return shopIDs;
+}
 
-        try ( Connection connection = DriverManager.getConnection(url, userId, passWord);  PreparedStatement insertStatement = connection.prepareStatement(query);  PreparedStatement selectStatement = connection.prepareStatement(selectQuery,
-                ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
 
-            insertStatement.setInt(1, shopID);
-            insertStatement.setInt(2, shopID);
+    public orderShop insertOrderShop(int shopID, int cusID) throws SQLException {
+        String query = "INSERT INTO OrderShop (shopID, address, phone) "
+                + "OUTPUT INSERTED.orderShopID, INSERTED.status, INSERTED.shopOrderPrice, INSERTED.address, INSERTED.phone, INSERTED.ShipperID "
+                + "VALUES (?, (SELECT TOP 1 c.address FROM OrderDetail a "
+                + "INNER JOIN Customer c ON a.cusID = c.cusID "
+                + "INNER JOIN OrderShop b ON b.shopID = a.shopID "
+                + "WHERE a.shopID = ? AND c.cusID = ?), "
+                + "(SELECT TOP 1 c.phone FROM OrderDetail a "
+                + "INNER JOIN Customer c ON a.cusID = c.cusID "
+                + "INNER JOIN OrderShop b ON b.shopID = a.shopID "
+                + "WHERE a.shopID = ? AND c.cusID = ?))";
 
-            int rowsAffected = insertStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                ResultSet resultSet = selectStatement.executeQuery();
-                resultSet.last();
-                int orderShopID = resultSet.getInt("orderShopID");
-                String status = resultSet.getString("status");
-                String address = resultSet.getString("address");
-                double shopOrderPrice = resultSet.getDouble("shopOrderPrice");
-                Integer shipperID = resultSet.getInt("shipperID");
+        try ( Connection connection = DriverManager.getConnection(url, userId, passWord); 
+                PreparedStatement statement = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
 
-                return new orderShop(orderShopID, shopID, status, address, shopOrderPrice, shipperID);
+            statement.setInt(1, shopID);
+            statement.setInt(2, shopID);
+            statement.setInt(3, cusID);
+            statement.setInt(4, shopID);
+            statement.setInt(5, cusID);
+
+            boolean hasResults = statement.execute();
+            if (hasResults) {
+                try ( ResultSet resultSet = statement.getResultSet()) {
+                    if (resultSet.next()) {
+                        int orderShopID = resultSet.getInt("orderShopID");
+                        String status = resultSet.getString("status");
+                        double shopOrderPrice = resultSet.getDouble("shopOrderPrice");
+                        String address = resultSet.getString("address");
+                        String phone = resultSet.getString("phone");
+                        Integer shipperID = resultSet.getInt("ShipperID");
+                        return new orderShop(orderShopID, shopID, status, BigDecimal.valueOf(shopOrderPrice), address, phone, shipperID);
+                    }
+                }
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception appropriately
         }
 
         return null;
@@ -407,7 +414,8 @@ public class OwnerDatabase {
         String query = "SELECT * FROM OrderShop WHERE shopID = ?";
         List<orderShop> orderShops = new ArrayList<>();
 
-        try ( PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, shopID);
 
             try ( ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -416,9 +424,10 @@ public class OwnerDatabase {
                     String status = resultSet.getString("status");
                     double shopOrderPrice = resultSet.getDouble("shopOrderPrice");
                     String address = resultSet.getString("address");
+                    String phone = resultSet.getString("phone");
                     Integer shipperID = resultSet.getInt("shipperID");
 
-                    orderShop orderShop = new orderShop(orderShopID, shopID, status, address, shopOrderPrice, shipperID);
+                    orderShop orderShop = new orderShop(orderShopID, shopID, status, BigDecimal.valueOf(shopOrderPrice), address, phone, shipperID);
                     orderShops.add(orderShop);
                 }
             }
@@ -430,16 +439,15 @@ public class OwnerDatabase {
         return orderShops;
     }
 
-    public void updateShipperID(int orderShopID, int shipperID) {
+    public void updateShipperID(int orderShopID, int shipperID) throws SQLException {
         String query = "UPDATE OderShop SET ShipperID = ? WHERE orderShopID = ?";
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try (Connection connection = DriverManager.getConnection(url, userId, passWord);
+                PreparedStatement preparedStatement = connection.prepareStatement(query);){
+            
             preparedStatement.setInt(1, shipperID);
             preparedStatement.setInt(2, orderShopID);
 
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-
-        }
+        } 
     }
 }

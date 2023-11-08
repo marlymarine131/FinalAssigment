@@ -26,7 +26,7 @@
                                         <td data-price="${cartItem.price}">${cartItem.price} $</td>
                                         <td>
                                             <div class="quantity">
-                                                <input type="number" name="quantity${status.index}"class="quantity-input" data-index="${status.index}" value="0" min="1" max="10" />
+                                                <input type="number" name="quantity${status.index}"class="quantity-input" data-index="${status.index}" value="0" min="1" />
                                             </div>
                                         </td>
                                         <td class="subtotal" data-subtotal="${status.index}">${cartItem.price} $</td>

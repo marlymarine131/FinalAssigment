@@ -33,15 +33,15 @@ create table Food(
 	imagine varbinary(max) null,
 )
 go
-create table customer (
-	cusID INT IDENTITY(1,1) PRIMARY KEY,
-	address nvarchar(200),
-	phone varchar(10)
-	check (phone like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
-	password varchar(20) not null,
-	name nvarchar(50),
-	email varchar(30) unique check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
-	);
+	create table customer (
+		cusID INT IDENTITY(1,1) PRIMARY KEY,
+		address nvarchar(200),
+		phone varchar(10)
+		check (phone like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
+		password varchar(20) not null,
+		name nvarchar(50),
+		email varchar(30) unique check (email LIKE '[a-z]%@[a-z]%.[a-z]%')
+		);
 	go
 create table Shipper (
 	ShipperID int IDENTITY(1,1) not null primary key,
@@ -66,7 +66,7 @@ CREATE TABLE OrderDetail (
     quantity INT DEFAULT 0,
     orderDetailID INT IDENTITY(1,1) PRIMARY KEY,
     cusID INT FOREIGN KEY REFERENCES Customer(cusID),
-	orderShopID INT NULL FOREIGN KEY REFERENCES OderShop(orderShopID),
+	orderShopID INT NULL FOREIGN KEY REFERENCES OrderShop(orderShopID),
     OrderID INT DEFAULT NULL FOREIGN KEY REFERENCES OrderTotal(OrderID),
     foodID INT FOREIGN KEY REFERENCES Food(foodID),
     shopID INT FOREIGN KEY REFERENCES Shop(shopID),
@@ -76,7 +76,7 @@ CREATE TABLE OrderShop(
 	orderShopID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	shopID INT FOREIGN KEY REFERENCES Shop(shopID),	
 	status NVARCHAR(50) DEFAULT 'Not Delivery',
-	shopOrderPrice DECIMAL(18,2),
+	shopOrderPrice DECIMAL(18,2) default 0,
 	address NVARCHAR(200),
 	phone varchar(10),
 	ShipperID INT null  FOREIGN KEY REFERENCES Shipper(ShipperID),
@@ -94,21 +94,22 @@ BEGIN
     INNER JOIN inserted i ON od.orderDetailID = i.orderDetailID;
 END;
 go
-CREATE TRIGGER tr_OrderDetail_AfterInsert
+CREATE TRIGGER UpdateShopOrderPrice
 ON OrderDetail
-AFTER INSERT, UPDATE
+AFTER UPDATE
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    UPDATE o
-    SET o.total_price = (
+    UPDATE os
+    SET os.shopOrderPrice = COALESCE((
         SELECT SUM(od.subTotal)
         FROM OrderDetail od
-        WHERE od.OrderID = o.OrderID
-    )
-    FROM OrderTotal o
-    INNER JOIN inserted i ON o.OrderID = i.OrderID;
+        WHERE os.orderShopID = od.orderShopID
+    ), 0)
+    FROM OrderShop os
+    INNER JOIN inserted i ON os.orderShopID = i.orderShopID;
+
 END;
 go
 CREATE TRIGGER trg_UpdateShopOrderPrice
@@ -116,7 +117,6 @@ ON OrderDetail
 AFTER INSERT, UPDATE, DELETE
 AS
 BEGIN
-    IF (UPDATE(orderShopID) OR INSERT OR DELETE)
     BEGIN
         UPDATE OrderShop
         SET shopOrderPrice = (

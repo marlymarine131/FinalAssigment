@@ -78,31 +78,39 @@ public class addOrder extends HttpServlet {
         DatabaseConnector dc = new DatabaseConnector();
         Customer cu = (Customer) request.getSession().getAttribute("accout");
         List<orderDetail> cartList = dc.getCusID(cu.getCustomerID());
-        List<Integer> noShop = foodDAO.getShopIDs();
+        List<Integer> noShop = null;
         try {
-            Order or = dc.insertOrder(cu.getCustomerID());
+            noShop = foodDAO.getShopIDs(cu.getCustomerID());
+        } catch (SQLException ex) {
+            request.setAttribute("MSG", ex + "1");
+            request.getRequestDispatcher("fail.jsp").forward(request, response);
+            Logger.getLogger(addOrder.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            List<orderShop> orderShopList = foodDAO.processOrderDetails(noShop);
+        try {
+//            Order or = dc.insertOrder(cu.getCustomerID());
+            List<orderShop> orderShopList = foodDAO.processOrderDetails(noShop, cu.getCustomerID());
 
+            String quantityParam1 = "quantity" + 0;
+            int quantity1 = Integer.parseInt(request.getParameter(quantityParam1));
             for (orderShop shop : orderShopList) {
                 for (orderDetail detail : cartList) {
-                    String quantityParam = "quantity" + cartList.indexOf(detail);
-                    int quantity = Integer.parseInt(request.getParameter(quantityParam));               
-                    if (dc.updateOrder(quantity, or.getOrderID(), detail.getOrderDetailID(), shop.getOrderShopID())) {
-                        response.sendRedirect("browsing");
-                    } else {
-                        request.setAttribute("MSG", "can not update");
-                        request.getRequestDispatcher("fail.jsp").forward(request, response);
+                    if (detail.getShopID() == shop.getShopID()) {
+                        String quantityParam = "quantity" + cartList.indexOf(detail);
+                        int quantity = Integer.parseInt(request.getParameter(quantityParam));
+                        dc.updateOrder(quantity, detail.getOrderDetailID(), shop.getOrderShopID());
                     }
-
                 }
             }
-
+            response.sendRedirect("browsing");
         } catch (SQLException ex) {
             request.setAttribute("MSG", ex);
             request.getRequestDispatcher("fail.jsp").forward(request, response);
         }
 
+    }
+
+    public addOrder() {
     }
 
     /**
